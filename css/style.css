@@ -294,6 +294,9 @@ section.lasted-Work {
     border-top: 1px solid #e7e7e7;
 }
 /* contact */
+.green-txt{
+    color:var(--c-green);
+}
 .available:before {
     content: "";
     display: absolute;
