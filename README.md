@@ -20,7 +20,7 @@ User Interface Designer focused on **Mobile First** with **Figma** and developin
 </div> 
 
 ## 🚀 About Me
-With more than **9 years of experience** creating and collaborating on various projects using Mobile First layout in Figma and developing with HTML, CSS, JavaScript and Version Control System with **Git** and **GitHub**. I distinguish myself by my collaboration in teamwork, adaptability to changes and my passion for never stopping learning.
+With more than **9 years of experience** creating and collaborating on various projects using Mobile First layout in Figma and developing with HTML, CSS, JavaScript and Version Control System with **Git** and **GitHub**. 
 
 I distinguish myself by my collaboration working as a team, adaptability to changes, attention to detail and my passion for never stopping learning new programming languages.
 
