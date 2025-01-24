@@ -105,6 +105,7 @@ a:visited {
 
 hr {
     border: 1px solid #e7e7e7;
+    margin: 2rem 0;
 }
 
 section {
@@ -436,6 +437,7 @@ button > a img{
     padding: 1rem;
 }
 a.mP-link{
+    display: flex;
     margin-top: 2rem;
     color: var(--c-black);
 }
