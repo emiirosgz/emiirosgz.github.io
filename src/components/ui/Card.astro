@@ -1,0 +1,92 @@
+---
+import Etiqueta from "@/components/ui/Tags.astro";
+interface Props {
+    href?: string;
+    imgSrc: string;
+    titulo: string;
+    descripcion: string;
+    tags?: string[];
+    alt?: string;
+    variante?: "simple" | "card";
+}
+const {
+    href = "#",
+    imgSrc = "https://placehold.co/800x600/141414/A1A1AA?text=800x600",
+    titulo,
+    descripcion,
+    tags,
+    alt,
+    variante = "simple",
+} = Astro.props;
+
+const isCard = variante === "card";
+const tagVariant = isCard ? "dos" : "uno";
+const titleClass = isCard
+    ? "font-display text-xl font-medium mb-2 group-hover:text-(--accent) transition-colors"
+    : "font-display text-xl md:text-2xl font-medium mb-2 group-hover:text-(--accent)  transition-colors";
+const descriptionClass = isCard
+    ? "text-(--lightgray) text-sm line-clamp-2 mb-6"
+    : "text-textMuted mb-4";
+const imageWrapperClass = isCard
+    ? "w-full aspect-4/3 overflow-hidden bg-black relative"
+    : "relative w-full aspect-4/3 bg-surface overflow-hidden mb-6 border border-white/5";
+const imageClass = isCard
+    ? "w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700"
+    : "w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-in-out";
+const wrapperClass = isCard
+    ? "group cursor-pointer flex flex-col h-full bg-(--deepgray) border border-white/5 hover:border-(--accent)/50 transition-colors"
+    : "group lg:col-span-6 block mt-12 lg:mt-0";
+
+---
+
+{isCard ? (
+    <a href={href} class={wrapperClass}>
+        <div class={imageWrapperClass}>
+            <img
+                src={imgSrc || "https://placehold.co/800x600/141414/A1A1AA?text=Content+Proyect"}
+                alt={alt || "Content Proyect"}
+                class={imageClass}
+            />
+        </div>
+        <div class="p-6 grow flex flex-col justify-between">
+            <div>
+                <h3 class={titleClass}>
+                    {titulo || "Lorem ipsum dolor sit amet"}
+                </h3>
+                <p class={descriptionClass}>
+                    {descripcion || "Sed euismod, diam nec mattis placerat, diam nisl tristique massa, vel gravida orci mi nec justo." }
+                </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                { tags && tags.map((tag:string | undefined) => (
+                    <Etiqueta etiqueta={tag} variante={tagVariant} />
+                    ))
+                }
+            </div>
+        </div>
+    </a>
+) : (
+    <a href={href} class={wrapperClass}>
+        <div class={imageWrapperClass}>
+            <img
+                src={imgSrc || "https://placehold.co/800x600/141414/A1A1AA?text=Content+Proyect"}
+                alt={alt || "Content Proyect"}
+                class={imageClass}
+            />
+        </div>
+        <div>
+            <h3 class={titleClass}>
+                {titulo || "Lorem ipsum dolor sit amet"}
+            </h3>
+            <p class={descriptionClass}>
+                {descripcion || "Sed euismod, diam nec mattis placerat, diam nisl tristique massa, vel gravida orci mi nec justo." }
+            </p>
+            <div class="flex flex-wrap gap-2">
+                { tags && tags.map((tag:string | undefined) => (
+                    <Etiqueta etiqueta={tag} variante={tagVariant} />
+                    ))
+                }
+            </div>
+        </div>
+    </a>
+)}

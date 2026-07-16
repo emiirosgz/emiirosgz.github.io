@@ -1,0 +1,25 @@
+---
+import Button from "../ui/Button.astro"
+import { ChevronRight } from "@/assets/icons";
+interface Props {
+    titulo:string;
+    desc:string;
+    href:string;
+    etiqueta:string;
+}
+const {titulo, desc, href, etiqueta} = Astro.props;
+---
+<!-- seccion acalarativa de trabajos con clientes y proyectos personales -->
+<section>
+    <div class="max-w-3xl mx-auto my-16 py-8">
+        <div class="flex flex-col text-center items-center">
+            <h4 class="text-2xl font-light mb-6 group-hover:text-(--accent)">{titulo}</h4>
+            <p class="text-sm text-neutral-400">
+                {desc}
+            </p>
+            <Button className="p-0! mt-4 font-normal text-sm" href={href} etiqueta={etiqueta} variante="link" conIcono>
+                <ChevronRight slot="icon" width="16px" height="16px"/>
+            </Button>
+        </div>
+    </div>
+</section>

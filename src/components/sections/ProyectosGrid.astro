@@ -1,0 +1,55 @@
+---
+import Card from "../ui/Card.astro";
+import { CATEGORIAS } from "@/lib/consts";
+interface Props {
+    gridCol: string;
+    projects: any;
+}
+const { gridCol, projects } = Astro.props;
+
+const gridColumnClass =
+    gridCol === "2"
+        ? "md:grid-cols-2"
+        : gridCol === "4"
+        ? "md:grid-cols-4"
+        : "md:grid-cols-3";
+
+const normalizeProject = (project: any) => {
+    const entry = project?.data ? project : { data: project };
+    const image = entry.data?.imagen ?? entry.img;
+    const imgSrc = typeof image === "string" ? image : image?.src;
+    const category = CATEGORIAS.find((cat) => cat.id === entry.data?.categoria);
+    const categoryHref = category?.href ?? entry.data?.categoria?.toLowerCase().replace(/\s+/g, "-");
+    const slug = entry.id ?? entry.data?.slug ?? entry.data?.titulo?.toLowerCase().replace(/\s+/g, "-");
+    const href = entry?.data
+        ? `/proyectos/${categoryHref}/${slug}`
+        : entry.href;
+
+    return {
+        href,
+        img: imgSrc,
+        titulo: entry.data?.titulo ?? entry.titulo,
+        descripcion:
+            entry.data?.short_desc ?? entry.descripcion ?? entry.data?.descripcion,
+        tags: entry.data?.tags ?? entry.tags,
+        alt: entry.data?.titulo ?? entry.alt,
+    };
+};
+---
+
+<div class={`grid grid-cols-1 ${gridColumnClass} gap-4`}>
+    {projects?.map((project: any) => {
+        const normalized = normalizeProject(project);
+        return (
+            <Card
+                href={normalized.href}
+                imgSrc={normalized.img}
+                titulo={normalized.titulo}
+                descripcion={normalized.descripcion}
+                tags={normalized.tags}
+                alt={normalized.alt}
+                variante="card"
+            />
+        );
+    })}
+</div>

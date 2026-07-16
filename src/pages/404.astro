@@ -1,0 +1,67 @@
+---
+import ErrorPage from "@/layouts/ErrorPage.astro";
+type errorMenu = {
+    label:string;
+    href:string;
+}
+const link:errorMenu[] = [
+    {
+        label:'Inicio',
+        href:'/',
+    },
+    {
+        label:'E-mail',
+        href:'mailto:emiirosgz@gmail.com',
+    },
+    {
+        label:'Mini Juego',
+        href:'/minijuego.html',
+    },
+]
+---
+<ErrorPage>
+    <div class="min-h-screen grid h-56 place-items-center gap-4 mx-8">
+        <div class="font-mono text-(--accent) md:text-xl">
+            <span class="bg-(--accent) text-xl md:text-3xl p-2 c">Error - 404</span>
+            <p class="mt-4">Ha ocurrido un error, para continuar:</p>
+            <ul>
+                <li>Regresa a la página de inicio</li>
+                <li>Envíanos un email para reportar el error</li>
+                <li>Juega un mini juego como compensación :)</li>
+            </ul>
+            <div class="flex gap-4 mt-4 text-xs md:text-base">
+                {link && link.map((i) => (
+                    <div class="group">
+                        <a href={i.href} class="flex items-center px-3 py-2 transition-all duration-300 text-neutral-400 hover:text-white">
+                            <span class="transition-opacity duration-300 opacity-0 group-hover:opacity-100 text-red-500">[</span>
+                            {i.label}
+                            <span class="transition-opacity duration-300 opacity-0 group-hover:opacity-100 text-red-500">]</span>    
+                        </a>
+                    </div>
+                ))}
+
+            </div>
+        </div>
+    </div>
+</ErrorPage>
+<style>
+    .c{
+        color: var(--black);
+    }
+    body{
+        background-color: var(--black);
+        background-image: url(../assets/inflicted.png);
+    }
+    ul {
+        list-style-type:none;
+        margin-top: 8px;
+    }
+    li{
+        margin-left: 30px;
+        padding: 4px 0;
+    }
+    ul li::before{
+        content: "* ";
+        padding-right: 8px;
+    }
+</style>

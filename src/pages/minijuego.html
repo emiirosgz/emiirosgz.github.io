@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON PONG: RIVALRY | Arcade 2D Moderno</title>
+    <!-- Importamos tipografía moderna y futurista -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-magenta: #ff007f;
+            --neon-yellow: #ffea00;
+            --bg-dark: #0a0a16;
+            --bg-panel: rgba(13, 13, 33, 0.85);
+            --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.6);
+            --glow-magenta: 0 0 15px rgba(255, 0, 127, 0.6);
+            --glow-yellow: 0 0 15px rgba(255, 234, 0, 0.6);
+            --font-main: 'Rajdhani', sans-serif;
+            --font-display: 'Orbitron', sans-serif;
+        }
+
+        /* Configuración de temas adicionales */
+        .theme-matrix {
+            --neon-cyan: #39ff14;
+            --neon-magenta: #00ff66;
+            --neon-yellow: #adff2f;
+            --bg-dark: #020b02;
+            --bg-panel: rgba(2, 15, 2, 0.85);
+            --glow-cyan: 0 0 15px rgba(57, 255, 20, 0.6);
+            --glow-magenta: 0 0 15px rgba(0, 255, 102, 0.6);
+            --glow-yellow: 0 0 15px rgba(173, 255, 47, 0.6);
+        }
+
+        .theme-sunset {
+            --neon-cyan: #ff5e00;
+            --neon-magenta: #ff0055;
+            --neon-yellow: #ffcc00;
+            --bg-dark: #12050f;
+            --bg-panel: rgba(26, 8, 22, 0.85);
+            --glow-cyan: 0 0 15px rgba(255, 94, 0, 0.6);
+            --glow-magenta: 0 0 15px rgba(255, 0, 85, 0.6);
+            --glow-yellow: 0 0 15px rgba(255, 204, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: var(--font-main);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Fondo de red/malla retrofuturista */
+        .retro-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .retro-grid::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, var(--bg-dark) 85%);
+            pointer-events: none;
+        }
+
+        /* Contenedor Principal (Dashboard con ilustraciones a los lados) */
+        .page-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        /* Contenedor del Juego */
+        .game-wrapper {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 2px var(--neon-cyan);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #04040a;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Paneles de Personajes (Ángel / Diablo) */
+        .character-panel {
+            width: 200px;
+            height: 420px;
+            background: var(--bg-panel);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 15px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .character-panel.angel-panel {
+            border-color: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.05);
+        }
+
+        .character-panel.devil-panel {
+            border-color: rgba(255, 0, 127, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 0, 127, 0.05);
+        }
+
+        /* Resaltado cuando un personaje va ganando */
+        .character-panel.state-winning.angel-panel {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), var(--glow-cyan);
+            transform: translateY(-8px);
+        }
+
+        .character-panel.state-winning.devil-panel {
+            border-color: var(--neon-magenta);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), var(--glow-magenta);
+            transform: translateY(-8px);
+        }
+
+        /* Atenuación del panel perdedor */
+        .character-panel.state-losing {
+            opacity: 0.65;
+            transform: scale(0.96) translateY(5px);
+        }
+
+        .character-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .angel-panel .character-title {
+            color: var(--neon-cyan);
+            text-shadow: var(--glow-cyan);
+        }
+
+        .devil-panel .character-title {
+            color: var(--neon-magenta);
+            text-shadow: var(--glow-magenta);
+        }
+
+        .character-svg-container {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 600px;
+        }
+
+        .character-state-desc {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.6);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
+            text-align: center;
+            padding-top: 12px;
+            text-transform: uppercase;
+        }
+
+        .angel-panel.state-winning .character-state-desc { color: var(--neon-cyan); }
+        .devil-panel.state-winning .character-state-desc { color: var(--neon-magenta); }
+        .character-panel.state-scored .character-state-desc { color: var(--neon-yellow); animation: flash-text 0.5s infinite alternate; }
+        .character-panel.state-missed .character-state-desc { color: #ef4444; }
+
+        @keyframes flash-text {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* --- ANIMACIONES DE LOS PERSONAJES SVG --- */
+        @keyframes wingFlapLeft {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(6deg) translateY(-2px); }
+        }
+
+        @keyframes wingFlapRight {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-6deg) translateY(-2px); }
+        }
+
+        @keyframes haloFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-6px) scale(1.03); }
+        }
+
+        @keyframes tailWiggle {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(12deg) translateY(-2px); }
+        }
+
+        @keyframes bodyBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .angel-svg, .devil-svg {
+            animation: bodyBob 4s ease-in-out infinite;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+        }
+
+        .angel-svg .left-wing { transform-origin: 75px 150px; animation: wingFlapLeft 3s ease-in-out infinite; }
+        .angel-svg .right-wing { transform-origin: 125px 150px; animation: wingFlapRight 3s ease-in-out infinite; }
+        .angel-svg .halo-container { transform-origin: 100px 65px; animation: haloFloat 2.5s ease-in-out infinite; }
+
+        .devil-svg .left-wing { transform-origin: 75px 150px; animation: wingFlapLeft 2.5s ease-in-out infinite; }
+        .devil-svg .right-wing { transform-origin: 125px 150px; animation: wingFlapRight 2.5s ease-in-out infinite; }
+        .devil-svg .tail { transform-origin: 100px 220px; animation: tailWiggle 1.5s ease-in-out infinite; }
+
+        /* Interfaces y Paneles de Menú */
+        .menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            z-index: 10;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .menu-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Título del Juego */
+        h1.game-title {
+            font-family: var(--font-display);
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 5px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3));
+            animation: pulse-title 3s infinite ease-in-out;
+        }
+
+        .subtitle {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            letter-spacing: 6px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        /* Opciones de Configuración */
+        .config-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .config-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .config-label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+        }
+
+        /* Selectores tipo Botonera */
+        .option-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .option-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 12px 10px;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.active {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+
+        .option-btn.active-magenta {
+            background: rgba(255, 0, 127, 0.1);
+            border-color: var(--neon-magenta);
+            color: var(--neon-magenta);
+            box-shadow: var(--glow-magenta);
+        }
+
+        /* Botón de Jugar Principal */
+        .play-button {
+            width: 100%;
+            max-width: 320px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+            border: none;
+            color: #ffffff;
+            padding: 16px 30px;
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 240, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .play-button:hover::before {
+            left: 100%;
+        }
+
+        .play-button:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 0, 127, 0.6);
+        }
+
+        /* Pantallas Auxiliares */
+        .game-over-title {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--neon-magenta);
+            text-shadow: var(--glow-magenta);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .game-over-winner {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        /* HUD flotantes superiores */
+        .hud-top {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 5;
+            pointer-events: none;
+            font-family: var(--font-display);
+        }
+
+        .hud-item {
+            background: rgba(6, 6, 18, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 6px 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .hud-item span {
+            color: var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        /* Atajos/Instrucciones */
+        .controls-info {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .control-key {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .key-badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: var(--font-display);
+            font-weight: bold;
+            color: var(--neon-cyan);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Efecto de parpadeo para el título */
+        @keyframes pulse-title {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 25px rgba(255, 0, 127, 0.6)); }
+        }
+
+        /* Contenedor de Botones de Sonido e Música Flotantes */
+        .audio-controls-group {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+        }
+
+        .sound-toggle {
+            background: rgba(6, 6, 18, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sound-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--neon-cyan);
+        }
+
+        .sound-toggle.muted {
+            color: rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Estilo específico para el botón de música */
+        #btnMusicToggle {
+            color: var(--neon-magenta);
+            box-shadow: var(--glow-magenta);
+            border-color: rgba(255, 0, 127, 0.2);
+        }
+
+        #btnMusicToggle:hover {
+            background: rgba(255, 0, 127, 0.1);
+            border-color: var(--neon-magenta);
+        }
+
+        #btnMusicToggle.muted {
+            color: rgba(255, 255, 255, 0.3);
+            box-shadow: none;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Sacudida de pantalla */
+        .shake {
+            animation: shake-anim 0.15s linear infinite;
+        }
+
+        @keyframes shake-anim {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .pause-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: var(--glow-cyan);
+            pointer-events: none;
+            z-index: 4;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .pause-indicator.visible {
+            opacity: 1;
+        }
+
+        /* Ocultamiento condicional por CSS de expresiones SVG */
+        .angel-panel.state-neutral .arms-normal, .angel-panel.state-neutral .eyes-neutral, .angel-panel.state-neutral .mouth-neutral { display: block !important; }
+        .angel-panel.state-winning .arms-triumphant, .angel-panel.state-winning .eyes-triumphant, .angel-panel.state-winning .mouth-triumphant { display: block !important; }
+        .angel-panel.state-winning .arms-normal, .angel-panel.state-winning .eyes-neutral, .angel-panel.state-winning .mouth-neutral { display: none !important; }
+
+        .angel-panel.state-losing .arms-sad, .angel-panel.state-losing .eyes-sad, .angel-panel.state-losing .mouth-sad { display: block !important; }
+        .angel-panel.state-losing .arms-normal, .angel-panel.state-losing .eyes-neutral, .angel-panel.state-losing .mouth-neutral { display: none !important; }
+
+        .angel-panel.state-scored .arms-triumphant, .angel-panel.state-scored .eyes-victory, .angel-panel.state-scored .mouth-victory { display: block !important; }
+        .angel-panel.state-scored .arms-normal, .angel-panel.state-scored .eyes-neutral, .angel-panel.state-scored .mouth-neutral { display: none !important; }
+
+        .angel-panel.state-missed .arms-sad, .angel-panel.state-missed .eyes-sad, .angel-panel.state-missed .mouth-sad { display: block !important; }
+        .angel-panel.state-missed .arms-normal, .angel-panel.state-missed .eyes-neutral, .angel-panel.state-missed .mouth-neutral { display: none !important; }
+
+        /* Diablo */
+        .devil-panel.state-neutral .arms-normal, .devil-panel.state-neutral .eyes-neutral, .devil-panel.state-neutral .mouth-neutral { display: block !important; }
+        .devil-panel.state-winning .arms-triumphant, .devil-panel.state-winning .eyes-triumphant, .devil-panel.state-winning .mouth-triumphant { display: block !important; }
+        .devil-panel.state-winning .arms-normal, .devil-panel.state-winning .eyes-neutral, .devil-panel.state-winning .mouth-neutral { display: none !important; }
+
+        .devil-panel.state-losing .arms-sad, .devil-panel.state-losing .eyes-sad, .devil-panel.state-losing .mouth-sad { display: block !important; }
+        .devil-panel.state-losing .arms-normal, .devil-panel.state-losing .eyes-neutral, .devil-panel.state-losing .mouth-neutral { display: none !important; }
+
+        .devil-panel.state-scored .arms-triumphant, .devil-panel.state-scored .eyes-victory, .devil-panel.state-scored .mouth-victory { display: block !important; }
+        .devil-panel.state-scored .arms-normal, .devil-panel.state-scored .eyes-neutral, .devil-panel.state-scored .mouth-neutral { display: none !important; }
+
+        .devil-panel.state-missed .arms-sad, .devil-panel.state-missed .eyes-sad, .devil-panel.state-missed .mouth-sad { display: block !important; }
+        .devil-panel.state-missed .arms-normal, .devil-panel.state-missed .eyes-neutral, .devil-panel.state-missed .mouth-neutral { display: none !important; }
+
+        /* Adaptabilidad móvil simple */
+        @media (max-width: 1350px) {
+            .character-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="retro-grid"></div>
+
+    <div class="page-container">
+        
+        <!-- PANEL ILUSTRACIÓN ÁNGEL (IZQUIERDA) -->
+        <div class="character-panel angel-panel state-neutral" id="angelPanel">
+            <div class="character-title">ÁNGEL</div>
+            
+            <div class="character-svg-container">
+                <svg class="angel-svg" viewBox="0 0 200 250" width="160" height="200">
+                    <defs>
+                        <linearGradient id="haloGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fffb00" />
+                            <stop offset="100%" stop-color="#ff9d00" />
+                        </linearGradient>
+                        <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff" />
+                            <stop offset="100%" stop-color="#a0f0ff" />
+                        </linearGradient>
+                        <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffedd5" />
+                            <stop offset="100%" stop-color="#fed7aa" />
+                        </linearGradient>
+                        <linearGradient id="hairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fef08a" />
+                            <stop offset="100%" stop-color="#ca8a04" />
+                        </linearGradient>
+                        <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- ALAS -->
+                    <g class="wings">
+                        <path class="wing left-wing" d="M 75,120 C 35,90 25,140 55,170 C 35,170 35,190 65,200 C 55,200 55,220 85,210" fill="url(#wingGrad)" opacity="0.9" />
+                        <path class="wing right-wing" d="M 125,120 C 165,90 175,140 145,170 C 165,170 165,190 135,200 C 145,200 145,220 115,210" fill="url(#wingGrad)" opacity="0.9" />
+                    </g>
+
+                    <!-- CUERPO (TÚNICA) -->
+                    <path class="robe" d="M 80,150 L 55,230 L 145,230 L 120,150 Z" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2" />
+                    <path class="robe-trim" d="M 55,230 L 145,230 L 140,234 L 60,234 Z" fill="#00f0ff" filter="url(#neonGlow)" />
+
+                    <!-- BRAZOS -->
+                    <g class="arms-normal" style="display:none;">
+                        <path d="M 78,160 C 65,175 62,200 68,212" fill="none" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" />
+                        <path d="M 122,160 C 135,175 138,200 132,212" fill="none" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" />
+                    </g>
+                    <g class="arms-triumphant" style="display:none;">
+                        <path d="M 78,160 C 55,140 45,115 50,105" fill="none" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" />
+                        <path d="M 122,160 C 145,140 155,115 150,105" fill="none" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" />
+                    </g>
+                    <g class="arms-sad" style="display:none;">
+                        <path d="M 78,160 C 74,180 70,195 64,202" fill="none" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" />
+                        <path d="M 122,160 C 126,180 130,195 136,202" fill="none" stroke="#fed7aa" stroke-width="7" stroke-linecap="round" />
+                    </g>
+
+                    <!-- CABEZA & CABELLO -->
+                    <circle class="head" cx="100" cy="110" r="28" fill="url(#skinGrad)" />
+                    <path class="hair" d="M 73,110 C 73,78 127,78 127,110 C 127,97 118,88 100,88 C 82,88 73,97 73,110" fill="url(#hairGrad)" />
+
+                    <!-- ARO DE LUZ (HALO) -->
+                    <g class="halo-container">
+                        <ellipse cx="100" cy="65" rx="22" ry="6" fill="none" stroke="url(#haloGrad)" stroke-width="4" filter="url(#neonGlow)" />
+                    </g>
+
+                    <!-- OJOS -->
+                    <g class="eyes-neutral" style="display:none;">
+                        <circle cx="91" cy="110" r="3" fill="#0f172a" />
+                        <circle cx="109" cy="110" r="3" fill="#0f172a" />
+                        <path d="M 86,104 Q 91,102 96,104" fill="none" stroke="#0f172a" stroke-width="1.2" stroke-linecap="round" />
+                        <path d="M 104,104 Q 109,102 114,104" fill="none" stroke="#0f172a" stroke-width="1.2" stroke-linecap="round" />
+                    </g>
+                    <g class="eyes-triumphant" style="display:none;">
+                        <path d="M 85,113 Q 91,105 97,113" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 103,113 Q 109,105 115,113" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
+                    </g>
+                    <g class="eyes-sad" style="display:none;">
+                        <circle cx="91" cy="112" r="2.5" fill="#0f172a" />
+                        <circle cx="109" cy="112" r="2.5" fill="#0f172a" />
+                        <path d="M 85,107 Q 91,111 97,105" fill="none" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M 103,105 Q 109,111 115,107" fill="none" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round" />
+                        <path class="tear" d="M 91,114 C 91,119 88,119 88,116 Z" fill="#38bdf8" />
+                    </g>
+                    <g class="eyes-victory" style="display:none;">
+                        <path d="M 85,113 Q 91,105 97,113" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 104,110 L 114,110" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" />
+                    </g>
+
+                    <!-- BOCA -->
+                    <path class="mouth-neutral" d="M 93,122 Q 100,127 107,122" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" style="display:none;" />
+                    <path class="mouth-triumphant" d="M 91,121 Q 100,131 109,121 Z" fill="#ff007f" stroke="#0f172a" stroke-width="1.5" style="display:none;" />
+                    <path class="mouth-sad" d="M 94,125 Q 100,119 106,125" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" style="display:none;" />
+                    <path class="mouth-victory" d="M 92,121 Q 100,129 108,121 Z" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" style="display:none;" />
+                </svg>
+            </div>
+            
+            <div class="character-state-desc" id="angelStateDesc">NEUTRO</div>
+        </div>
+
+        <!-- CONTENEDOR PRINCIPAL DEL JUEGO -->
+        <div class="game-wrapper" id="gameWrapper">
+            <!-- Indicador de Pausa -->
+            <div class="pause-indicator" id="pauseIndicator">PAUSA</div>
+            
+            <!-- HUD flotante del juego -->
+            <div class="hud-top">
+                <div class="hud-item" id="hudMode">MODO: <span>1 JUGADOR</span></div>
+                <div class="hud-item" id="hudHint">[Espacio] Pausa | Físicas Reactivas</div>
+            </div>
+
+            <!-- CANVAS principal -->
+            <canvas id="gameCanvas" width="900" height="600"></canvas>
+
+            <!-- MENU DE INICIO -->
+            <div class="menu-overlay" id="startMenu">
+                <h1 class="game-title">NEON PONG</h1>
+                <div class="subtitle">Rivalry Edition</div>
+
+                <div class="config-container">
+                    <!-- Selector de Modo de Juego -->
+                    <div class="config-row">
+                        <div class="config-label">Modo de Juego</div>
+                        <div class="option-group" id="modeSelect">
+                            <button class="option-btn active" data-mode="1P">1 Jugador (VS IA)</button>
+                            <button class="option-btn" data-mode="2P">2 Jugadores</button>
+                        </div>
+                    </div>
+
+                    <!-- Selector de Dificultad de la IA (Solo para 1P) -->
+                    <div class="config-row" id="difficultyConfig">
+                        <div class="config-label">Dificultad IA</div>
+                        <div class="option-group" id="diffSelect">
+                            <button class="option-btn" data-diff="easy">Fácil</button>
+                            <button class="option-btn active" data-diff="medium">Medio</button>
+                            <button class="option-btn" data-diff="hard">Experto</button>
+                        </div>
+                    </div>
+
+                    <!-- Selector de Estilo Visual (Temas) -->
+                    <div class="config-row">
+                        <div class="config-label">Estilo Sintetizador</div>
+                        <div class="option-group" id="themeSelect">
+                            <button class="option-btn active" data-theme="cyber">Cyberpunk</button>
+                            <button class="option-btn" data-theme="matrix">Retro Grid</button>
+                            <button class="option-btn" data-theme="sunset">Solar Flare</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón para Iniciar -->
+                <button class="play-button" id="btnStartGame">Iniciar Juego</button>
+
+                <!-- Información de Controles -->
+                <div class="controls-info">
+                    <div class="control-key">
+                        <span>Ángel (P1)</span>
+                        <div><span class="key-badge">W</span> / <span class="key-badge">S</span></div>
+                    </div>
+                    <div class="control-key" id="controlsRightP">
+                        <span>Diablito (IA)</span>
+                        <div><span class="key-badge">↑</span> / <span class="key-badge">↓</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANTALLA DE FIN DE JUEGO (GAME OVER) -->
+            <div class="menu-overlay hidden" id="gameOverMenu">
+                <h2 class="game-over-title" id="gameOverTitle">JUEGO TERMINADO</h2>
+                <div class="game-over-winner" id="winnerAnnouncement">¡El Ángel Gana!</div>
+
+                <!-- Botón para reiniciar -->
+                <button class="play-button" id="btnRestartGame">Jugar de Nuevo</button>
+                <button class="option-btn" style="margin-top: 15px; max-width: 250px;" id="btnReturnMenu">Volver al Menú</button>
+            </div>
+
+            <!-- Botones de Audio Flotantes -->
+            <div class="audio-controls-group">
+                <!-- Botón Música -->
+                <div class="sound-toggle" id="btnMusicToggle" title="Música Dinámica">
+                    <svg id="svgMusicOn" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                    </svg>
+                    <svg id="svgMusicOff" class="hidden" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18V5l12-2v13"></path>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <circle cx="18" cy="16" r="3"></circle>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                </div>
+                <!-- Botón Efectos -->
+                <div class="sound-toggle" id="btnSoundToggle" title="Efectos de Sonido">
+                    <svg id="svgSoundOn" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    <svg id="svgSoundOff" class="hidden" style="display:none;" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL ILUSTRACIÓN DIABLO (DERECHA) -->
+        <div class="character-panel devil-panel state-neutral" id="devilPanel">
+            <div class="character-title">DIABLITO</div>
+            
+            <div class="character-svg-container">
+                <svg class="devil-svg" viewBox="0 0 200 250" width="160" height="200">
+                    <defs>
+                        <linearGradient id="hornGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff0044" />
+                            <stop offset="100%" stop-color="#80001a" />
+                        </linearGradient>
+                        <linearGradient id="devilSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f43f5e" />
+                            <stop offset="100%" stop-color="#9f1239" />
+                        </linearGradient>
+                        <linearGradient id="batWing" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#374151" />
+                            <stop offset="100%" stop-color="#111827" />
+                        </linearGradient>
+                    </defs>
+
+                    <!-- COLA -->
+                    <path class="tail" d="M 100,215 C 120,235 145,235 145,205 C 145,188 152,192 156,187 L 165,188 L 159,202 Z" fill="#9f1239" stroke="#f43f5e" stroke-width="1.5" />
+
+                    <!-- ALAS BAT-LIKE -->
+                    <g class="wings">
+                        <path class="wing left-wing" d="M 75,130 L 30,105 L 45,145 L 30,175 C 50,170 65,155 75,160" fill="url(#batWing)" stroke="#111827" stroke-width="1.5" />
+                        <path class="wing right-wing" d="M 125,130 L 170,105 L 155,145 L 170,175 C 150,170 135,155 125,160" fill="url(#batWing)" stroke="#111827" stroke-width="1.5" />
+                    </g>
+
+                    <!-- CUERPO (TUNICA OSCURA) -->
+                    <path class="robe" d="M 80,150 L 55,230 L 145,230 L 120,150 Z" fill="#1e1b4b" stroke="#6366f1" stroke-width="2" />
+                    <path class="robe-trim" d="M 55,230 L 145,230 L 140,234 L 60,234 Z" fill="#ff007f" filter="url(#neonGlow)" />
+
+                    <!-- BRAZOS -->
+                    <g class="arms-normal" style="display:none;">
+                        <path d="M 78,160 C 65,175 62,200 68,212" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round" />
+                        <path d="M 122,160 C 135,175 138,200 132,212" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round" />
+                    </g>
+                    <g class="arms-triumphant" style="display:none;">
+                        <path d="M 78,160 C 55,140 45,115 50,105" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round" />
+                        <path d="M 122,160 C 145,140 155,115 150,105" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round" />
+                    </g>
+                    <g class="arms-sad" style="display:none;">
+                        <path d="M 78,160 C 74,180 70,195 64,202" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round" />
+                        <path d="M 122,160 C 126,180 130,195 136,202" fill="none" stroke="#f43f5e" stroke-width="7" stroke-linecap="round" />
+                    </g>
+
+                    <!-- CABEZA & CUERNOS -->
+                    <circle class="head" cx="100" cy="110" r="28" fill="url(#devilSkin)" />
+                    <path class="horn left-horn" d="M 76,90 C 76,71 67,66 62,66 C 67,76 71,85 76,93 Z" fill="url(#hornGrad)" stroke="#ff0055" stroke-width="1" filter="url(#neonGlow)" />
+                    <path class="horn right-horn" d="M 124,90 C 124,71 133,66 138,66 C 133,76 129,85 124,93 Z" fill="url(#hornGrad)" stroke="#ff0055" stroke-width="1" filter="url(#neonGlow)" />
+
+                    <!-- OJOS -->
+                    <g class="eyes-neutral" style="display:none;">
+                        <path d="M 83,106 L 94,110 L 85,114 Z" fill="#ffea00" stroke="#4c0519" stroke-width="0.8" />
+                        <path d="M 117,106 L 106,110 L 115,114 Z" fill="#ffea00" stroke="#4c0519" stroke-width="0.8" />
+                        <path d="M 81,102 L 95,107" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" />
+                        <path d="M 119,102 L 105,107" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" />
+                    </g>
+                    <g class="eyes-triumphant" style="display:none;">
+                        <path d="M 81,111 L 95,107" fill="none" stroke="#ffea00" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 119,111 L 105,107" fill="none" stroke="#ffea00" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 79,102 L 97,107" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M 121,102 L 103,107" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" />
+                    </g>
+                    <g class="eyes-sad" style="display:none;">
+                        <circle cx="91" cy="112" r="3" fill="#ffea00" />
+                        <circle cx="109" cy="112" r="3" fill="#ffea00" />
+                        <path d="M 83,105 Q 91,110 99,105" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M 101,105 Q 109,110 117,105" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" />
+                        <path class="sweat" d="M 113,115 C 113,119 110,119 110,116 Z" fill="#60a5fa" />
+                    </g>
+                    <g class="eyes-victory" style="display:none;">
+                        <path d="M 83,106 L 94,110 L 85,114 Z" fill="#ffea00" stroke="#4c0519" stroke-width="0.8" />
+                        <path d="M 103,110 Q 109,105 115,110" fill="none" stroke="#ffea00" stroke-width="2.5" stroke-linecap="round" />
+                    </g>
+
+                    <!-- BOCA -->
+                    <path class="mouth-neutral" d="M 89,123 Q 100,118 111,123 Q 100,129 89,123" fill="#4c0519" stroke="#000" stroke-width="1.2" style="display:none;" />
+                    <path class="mouth-triumphant" d="M 87,121 Q 100,135 113,121 Z" fill="#ff0000" stroke="#000" stroke-width="1.5" style="display:none;" />
+                    <path class="mouth-sad" d="M 93,126 Q 100,120 107,126" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" style="display:none;" />
+                    <path class="mouth-victory" d="M 87,120 Q 100,132 113,120 Z" fill="#ffe4e6" stroke="#000" stroke-width="1.2" style="display:none;" />
+                </svg>
+            </div>
+            
+            <div class="character-state-desc" id="devilStateDesc">NEUTRO</div>
+        </div>
+
+    </div>
+
+    <!-- CÓDIGO DEL JUEGO (Lógica, Físicas, Personajes y Web Audio API) -->
+    <script>
+        // --- SINTETIZADOR DE MÚSICA (WEB AUDIO API) ---
+        class MusicEngine {
+            constructor() {
+                this.ctx = null;
+                this.muted = false; // Música inicia desmutada por defecto
+                this.isPlaying = false;
+                this.bpm = 120;
+                this.currentStep = 0;
+                this.nextNoteTime = 0.0;
+                this.scheduleAheadTime = 0.12; 
+                this.lookahead = 30.0; 
+                this.timerId = null;
+                this.currentGenre = 'neutral'; // 'neutral' | 'angel' | 'metal'
+                
+                // Distorsión caché
+                this.shaperCurve = null;
+            }
+
+            init(audioCtx) {
+                if (this.ctx) return;
+                this.ctx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Nodo Ganancia Master para la Música (volumen moderado)
+                this.masterGain = this.ctx.createGain();
+                this.masterGain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                
+                // Compresor de salida para homogeneizar el audio y evitar saturaciones
+                this.compressor = this.ctx.createDynamicsCompressor();
+                this.compressor.threshold.setValueAtTime(-24, this.ctx.currentTime);
+                this.compressor.knee.setValueAtTime(30, this.ctx.currentTime);
+                this.compressor.ratio.setValueAtTime(12, this.ctx.currentTime);
+                this.compressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
+                this.compressor.release.setValueAtTime(0.25, this.ctx.currentTime);
+                
+                this.masterGain.connect(this.compressor);
+                this.compressor.connect(this.ctx.destination);
+            }
+
+            start() {
+                if (this.isPlaying) return;
+                this.init();
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+                this.isPlaying = true;
+                this.nextNoteTime = this.ctx.currentTime;
+                this.currentStep = 0;
+                this.scheduler();
+            }
+
+            stop() {
+                this.isPlaying = false;
+                if (this.timerId) {
+                    clearTimeout(this.timerId);
+                    this.timerId = null;
+                }
+            }
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            }
+
+            setGenre(genre) {
+                if (this.currentGenre === genre) return;
+                this.currentGenre = genre;
+                
+                // Transición del tempo acorde al género
+                if (genre === 'angel') {
+                    this.bpm = 80; // Tempo pausado y angelical
+                } else if (genre === 'metal') {
+                    this.bpm = 142; // Metal acelerado
+                } else {
+                    this.bpm = 120; // Synthwave estándar
+                }
+            }
+
+            scheduler() {
+                if (!this.isPlaying) return;
+                // Planifica notas un poco antes de que sea el momento de reproducirlas
+                while (this.nextNoteTime < this.ctx.currentTime + this.scheduleAheadTime) {
+                    this.scheduleNote(this.currentStep, this.nextNoteTime);
+                    this.nextStep();
+                }
+                this.timerId = setTimeout(() => this.scheduler(), this.lookahead);
+            }
+
+            nextStep() {
+                const secondsPerBeat = 60.0 / this.bpm;
+                this.nextNoteTime += 0.5 * secondsPerBeat; // Subdivisiones de corchea (eighth notes)
+                this.currentStep = (this.currentStep + 1) % 16;
+            }
+
+            scheduleNote(step, time) {
+                if (this.muted) return; // Si la música está silenciada, no disparamos osciladores
+
+                if (this.currentGenre === 'neutral') {
+                    this.playNeutralBeat(step, time);
+                } else if (this.currentGenre === 'angel') {
+                    this.playAngelBeat(step, time);
+                } else if (this.currentGenre === 'metal') {
+                    this.playMetalBeat(step, time);
+                }
+            }
+
+            // --- GÉNERO NEUTRO (SYNTHWAVE CYBERPUNK) ---
+            playNeutralBeat(step, time) {
+                // Percusión
+                if (step % 4 === 0) this.triggerKick(time);
+                if (step % 8 === 4) this.triggerSnare(time);
+                
+                // Línea de Bajo Retro (Octavas)
+                const roots = [55.00, 55.00, 55.00, 55.00,  43.65, 43.65, 43.65, 43.65,  65.41, 65.41, 65.41, 65.41,  49.00, 49.00, 49.00, 49.00]; // La, Fa, Do, Sol
+                const baseFreq = roots[step];
+                const freq = (step % 2 === 0) ? baseFreq : baseFreq * 2;
+                this.triggerSynthBass(freq, 0.2, time);
+
+                // Pequeño arpegio de fondo
+                const leadMelody = [440, 0, 494, 0, 523, 0, 659, 0, 523, 0, 440, 0, 494, 0, 392, 0];
+                if (leadMelody[step] > 0) {
+                    this.triggerSynthLead(leadMelody[step], 0.25, time);
+                }
+            }
+
+            // --- GÉNERO ÁNGEL (AMBIENTAL CELESTIAL) ---
+            playAngelBeat(step, time) {
+                // Sin ritmo de batería agresivo. Cuerdas y pads celestiales largos
+                if (step % 8 === 0) {
+                    if (step === 0) {
+                        // Cmaj9: C3, E3, G3, B3, D4
+                        this.triggerPadChord([130.81, 164.81, 196.00, 246.94, 293.66], 3.0, time);
+                    } else {
+                        // Am7/9: A2, C3, E3, G3, B3
+                        this.triggerPadChord([110.00, 130.81, 164.81, 196.00, 246.94], 3.0, time);
+                    }
+                }
+
+                // Destellos celestiales arpegiados al azar (Frecuencias altas y armónicas)
+                if (step % 2 === 1 && Math.random() > 0.3) {
+                    const scale = (step < 8) 
+                        ? [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50] // C5, D5, E5, G5, A5, C6
+                        : [440.00, 523.25, 587.33, 659.25, 783.99, 880.00]; // A4, C5, D5, E5, G5, A5
+                    const chimeNote = scale[Math.floor(Math.random() * scale.length)];
+                    this.triggerChime(chimeNote, time);
+                }
+            }
+
+            // --- GÉNERO METAL (RIFFS PESADOS Y DOBLE BOMBO) ---
+            playMetalBeat(step, time) {
+                // Doble bombo veloz (Galope característico del Metal)
+                if (step % 2 === 0 || step % 8 === 3 || step % 8 === 7) {
+                    this.triggerKick(time);
+                }
+                if (step % 8 === 4) {
+                    this.triggerSnare(time);
+                }
+                // Platillo hihat rápido
+                if (step % 2 === 1) {
+                    this.triggerHihat(time);
+                }
+
+                // Guitarra Rítmica Distorsionada (Escala de Mi menor con tritono diabólico)
+                const metalRiff = [
+                    82.41, 82.41, 98.00, 82.41, 92.50, 82.41, 82.41, 82.41,
+                    110.00, 82.41, 98.00, 82.41, 116.54, 82.41, 103.83, 82.41
+                ]; // Incluye E2, G2, F#2, A2, A#2 (tritono), G#2
+                const guitarFreq = metalRiff[step];
+                this.triggerDistortedGuitar(guitarFreq, 0.18, time);
+            }
+
+            // --- GENERADORES DE INSTRUMENTOS ---
+
+            triggerKick(time) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+                osc.frequency.setValueAtTime(110, time);
+                osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.12);
+                gain.gain.setValueAtTime(0.5, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.12);
+                osc.start(time);
+                osc.stop(time + 0.13);
+            }
+
+            triggerSnare(time) {
+                const bufferSize = this.ctx.sampleRate * 0.08;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1200;
+                
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.25, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.08);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+                noise.start(time);
+                noise.stop(time + 0.09);
+            }
+
+            triggerHihat(time) {
+                const bufferSize = this.ctx.sampleRate * 0.02;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 9000;
+                
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.12, time);
+                gain.gain.exponentialRampToValueAtTime(0.005, time + 0.02);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+                noise.start(time);
+                noise.stop(time + 0.025);
+            }
+
+            triggerSynthBass(freq, duration, time) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                const filter = this.ctx.createBiquadFilter();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(freq, time);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(220, time);
+
+                gain.gain.setValueAtTime(0.3, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+
+                osc.start(time);
+                osc.stop(time + duration + 0.02);
+            }
+
+            triggerSynthLead(freq, duration, time) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, time);
+
+                gain.gain.setValueAtTime(0.18, time);
+                gain.gain.exponentialRampToValueAtTime(0.01, time + duration);
+
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+                osc.start(time);
+                osc.stop(time + duration + 0.01);
+            }
+
+            // Chords para tema Ángel
+            triggerPadChord(frequencies, duration, time) {
+                frequencies.forEach(freq => {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, time);
+
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(350, time);
+
+                    // Efecto de atenuación lenta (Swell)
+                    gain.gain.setValueAtTime(0.0, time);
+                    gain.gain.linearRampToValueAtTime(0.06, time + 0.8);
+                    gain.gain.setValueAtTime(0.06, time + duration - 0.8);
+                    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.masterGain);
+
+                    osc.start(time);
+                    osc.stop(time + duration);
+                });
+            }
+
+            // Campana/Arpa para tema Ángel
+            triggerChime(freq, time) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, time);
+
+                gain.gain.setValueAtTime(0.0, time);
+                gain.gain.linearRampToValueAtTime(0.1, time + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + 1.2);
+
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+
+                osc.start(time);
+                osc.stop(time + 1.3);
+
+                // Eco incorporado
+                const echoOsc = this.ctx.createOscillator();
+                const echoGain = this.ctx.createGain();
+                echoOsc.type = 'sine';
+                echoOsc.frequency.setValueAtTime(freq, time + 0.25);
+                
+                echoGain.gain.setValueAtTime(0.0, time + 0.25);
+                echoGain.gain.linearRampToValueAtTime(0.04, time + 0.29);
+                echoGain.gain.exponentialRampToValueAtTime(0.001, time + 1.1);
+
+                echoOsc.connect(echoGain);
+                echoGain.connect(this.masterGain);
+                echoOsc.start(time + 0.25);
+                echoOsc.stop(time + 1.2);
+            }
+
+            // Guitarra metalera distorsionada por Waveshaper
+            triggerDistortedGuitar(freq, duration, time) {
+                if (!this.shaperCurve) {
+                    this.shaperCurve = this.makeDistortionCurve(75);
+                }
+
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const distortion = this.ctx.createWaveShaper();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(freq, time);
+
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(freq * 1.008, time); // Detuned
+
+                distortion.curve = this.shaperCurve;
+                distortion.oversample = '4x';
+
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(800, time);
+                filter.Q.setValueAtTime(2.5, time);
+
+                gain.gain.setValueAtTime(0.12, time); // Muy bajo volumen por la ganancia armónica
+                gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                osc1.connect(distortion);
+                osc2.connect(distortion);
+                distortion.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.masterGain);
+
+                osc1.start(time);
+                osc1.stop(time + duration + 0.01);
+                osc2.start(time);
+                osc2.stop(time + duration + 0.01);
+            }
+
+            makeDistortionCurve(amount) {
+                const k = typeof amount === 'number' ? amount : 50;
+                const n_samples = 44100;
+                const curve = new Float32Array(n_samples);
+                const deg = Math.PI / 180;
+                for (let i = 0; i < n_samples; ++i) {
+                    const x = (i * 2) / n_samples - 1;
+                    curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+                }
+                return curve;
+            }
+        }
+
+        // --- MOTOR DE EFECTOS DE SONIDO (SFX) ---
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+                return this.ctx;
+            }
+
+            toggleMute() {
+                this.muted = !this.muted;
+                return this.muted;
+            }
+
+            playPaddleHit() {
+                if (this.muted || !this.ctx) return;
+                this.init();
+                
+                const osc = this.ctx.createOscillator();
+                const gainNode = this.ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.25, this.ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.14);
+                
+                osc.connect(gainNode);
+                gainNode.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.14);
+            }
+
+            playWallHit() {
+                if (this.muted || !this.ctx) return;
+                this.init();
+                
+                const osc = this.ctx.createOscillator();
+                const gainNode = this.ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.08);
+                
+                gainNode.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.09);
+                
+                osc.connect(gainNode);
+                gainNode.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.09);
+            }
+
+            playScore() {
+                if (this.muted || !this.ctx) return;
+                this.init();
+                
+                const osc = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const gainNode = this.ctx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.3);
+                
+                osc2.type = 'square';
+                osc2.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc2.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.35);
+
+                gainNode.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.005, this.ctx.currentTime + 0.4);
+                
+                osc.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.4);
+                osc2.start();
+                osc2.stop(this.ctx.currentTime + 0.4);
+            }
+
+            playVictory() {
+                if (this.muted || !this.ctx) return;
+                this.init();
+
+                const playNote = (freq, delay, duration) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime + delay);
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.005, this.ctx.currentTime + delay + duration);
+                    
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(this.ctx.currentTime + delay);
+                    osc.stop(this.ctx.currentTime + delay + duration);
+                };
+
+                playNote(523.25, 0.0, 0.2); 
+                playNote(587.33, 0.15, 0.2); 
+                playNote(659.25, 0.3, 0.2); 
+                playNote(783.99, 0.45, 0.4); 
+            }
+        }
+
+        const sound = new SoundEngine();
+        const music = new MusicEngine();
+
+        // --- SISTEMA DE PARTÍCULAS ---
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 2;
+                this.speedX = (Math.random() - 0.5) * 8;
+                this.speedY = (Math.random() - 0.5) * 8;
+                this.color = color;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= this.decay;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // --- LOGICA DE JUEGO PRINCIPAL ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const wrapper = document.getElementById('gameWrapper');
+        
+        // Elementos DOM
+        const startMenu = document.getElementById('startMenu');
+        const gameOverMenu = document.getElementById('gameOverMenu');
+        const pauseIndicator = document.getElementById('pauseIndicator');
+        const btnStartGame = document.getElementById('btnStartGame');
+        const btnRestartGame = document.getElementById('btnRestartGame');
+        const btnReturnMenu = document.getElementById('btnReturnMenu');
+        const modeButtons = document.querySelectorAll('#modeSelect button');
+        const diffButtons = document.querySelectorAll('#diffSelect button');
+        const themeButtons = document.querySelectorAll('#themeSelect button');
+        const difficultyConfig = document.getElementById('difficultyConfig');
+        const controlsRightP = document.getElementById('controlsRightP');
+        const hudMode = document.getElementById('hudMode');
+        const winnerAnnouncement = document.getElementById('winnerAnnouncement');
+        
+        const btnSoundToggle = document.getElementById('btnSoundToggle');
+        const svgSoundOn = document.getElementById('svgSoundOn');
+        const svgSoundOff = document.getElementById('svgSoundOff');
+        
+        const btnMusicToggle = document.getElementById('btnMusicToggle');
+        const svgMusicOn = document.getElementById('svgMusicOn');
+        const svgMusicOff = document.getElementById('svgMusicOff');
+
+        const angelPanel = document.getElementById('angelPanel');
+        const devilPanel = document.getElementById('devilPanel');
+        const angelStateDesc = document.getElementById('angelStateDesc');
+        const devilStateDesc = document.getElementById('devilStateDesc');
+
+        // Configuración Inicial
+        let config = {
+            mode: '1P', 
+            difficulty: 'medium', 
+            theme: 'cyber', 
+            winningScore: 10
+        };
+
+        // Estado del Juego
+        let gameState = {
+            running: false,
+            paused: false,
+            scorePlayer1: 0,
+            scorePlayer2: 0,
+            winner: null
+        };
+
+        // Entidades
+        const paddleWidth = 15;
+        const paddleHeight = 100;
+        
+        const player1 = {
+            x: 25,
+            y: canvas.height / 2 - paddleHeight / 2,
+            width: paddleWidth,
+            height: paddleHeight,
+            score: 0,
+            speed: 8,
+            color: '' 
+        };
+
+        const player2 = {
+            x: canvas.width - 25 - paddleWidth,
+            y: canvas.height / 2 - paddleHeight / 2,
+            width: paddleWidth,
+            height: paddleHeight,
+            score: 0,
+            speed: 8,
+            color: '' 
+        };
+
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 8,
+            speedX: 0,
+            speedY: 0,
+            baseSpeed: 7,
+            maxSpeed: 16,
+            currentSpeed: 7,
+            color: '', 
+            trail: [] 
+        };
+
+        let particles = [];
+        let keys = {};
+        let lastTime = 0;
+        let tempExpressionTimeout = null;
+
+        // Estilos de los Temas
+        const themes = {
+            cyber: {
+                p1Color: '#00f0ff',
+                p2Color: '#ff007f',
+                ballColor: '#ffea00',
+                bodyClass: '',
+                canvasBg: '#04040a',
+                gridLineColor: 'rgba(255, 255, 255, 0.03)'
+            },
+            matrix: {
+                p1Color: '#39ff14',
+                p2Color: '#00ff66',
+                ballColor: '#adff2f',
+                bodyClass: 'theme-matrix',
+                canvasBg: '#010501',
+                gridLineColor: 'rgba(57, 255, 20, 0.03)'
+            },
+            sunset: {
+                p1Color: '#ff5e00',
+                p2Color: '#ff0055',
+                ballColor: '#ffcc00',
+                bodyClass: 'theme-sunset',
+                canvasBg: '#090207',
+                gridLineColor: 'rgba(255, 94, 0, 0.03)'
+            }
+        };
+
+        // --- MANEJO DE ESTADOS DE PERSONAJES (ÁNGEL / DIABLO) ---
+
+        function setPanelState(panel, stateClass, text) {
+            panel.classList.remove('state-neutral', 'state-winning', 'state-losing', 'state-scored', 'state-missed');
+            panel.classList.add('state-' + stateClass);
+            
+            if (panel.id === 'angelPanel') {
+                angelStateDesc.textContent = text;
+            } else {
+                devilStateDesc.textContent = text;
+            }
+        }
+
+        function updateCharacterStates(tempEvent) {
+            // Cancelar timers temporales si los hubiera
+            if (tempExpressionTimeout) {
+                clearTimeout(tempExpressionTimeout);
+                tempExpressionTimeout = null;
+            }
+
+            // Expresión temporal por anotación (anotó / falló)
+            if (tempEvent) {
+                if (tempEvent.p1Scored) {
+                    setPanelState(angelPanel, 'scored', '¡VÍCTORIA!');
+                    setPanelState(devilPanel, 'missed', '¡TRISTE!');
+                } else if (tempEvent.p2Scored) {
+                    setPanelState(angelPanel, 'missed', '¡TRISTE!');
+                    setPanelState(devilPanel, 'scored', '¡VÍCTORIA!');
+                }
+
+                // Restaurar estado base después de 1.8 segundos
+                tempExpressionTimeout = setTimeout(() => {
+                    tempExpressionTimeout = null;
+                    updateCharacterStates();
+                }, 1800);
+                return;
+            }
+
+            const p1 = gameState.scorePlayer1;
+            const p2 = gameState.scorePlayer2;
+
+            if (p1 === p2) {
+                // Empate
+                setPanelState(angelPanel, 'neutral', 'NEUTRO');
+                setPanelState(devilPanel, 'neutral', 'NEUTRO');
+                music.setGenre('neutral');
+            } else if (p1 > p2) {
+                // Ángel va ganando -> Música Angelical
+                setPanelState(angelPanel, 'winning', 'TRIUNFANTE');
+                setPanelState(devilPanel, 'losing', 'DERROTADO');
+                music.setGenre('angel');
+            } else {
+                // Diablo va ganando -> Música Heavy Metal
+                setPanelState(angelPanel, 'losing', 'DERROTADO');
+                setPanelState(devilPanel, 'winning', 'TRIUNFANTE');
+                music.setGenre('metal');
+            }
+        }
+
+        // --- SISTEMA DE ENTRADAS ---
+        window.addEventListener('keydown', (e) => {
+            keys[e.code] = true;
+            if (e.code === 'Space' && gameState.running && !gameState.winner) {
+                e.preventDefault();
+                togglePause();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+        });
+
+        // --- EVENTOS DE INTERFAZ ---
+
+        // Selector de Modo
+        modeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                config.mode = btn.dataset.mode;
+                
+                if (config.mode === '2P') {
+                    difficultyConfig.style.opacity = '0.3';
+                    difficultyConfig.style.pointerEvents = 'none';
+                    controlsRightP.innerHTML = '<span>Diablito (P2)</span><div><span class="key-badge">↑</span> / <span class="key-badge">↓</span></div>';
+                    hudMode.innerHTML = 'MODO: <span>2 JUGADORES</span>';
+                } else {
+                    difficultyConfig.style.opacity = '1';
+                    difficultyConfig.style.pointerEvents = 'all';
+                    controlsRightP.innerHTML = '<span>Diablito (IA)</span><div><span class="key-badge">↑</span> / <span class="key-badge">↓</span></div>';
+                    hudMode.innerHTML = 'MODO: <span>1 JUGADOR</span>';
+                }
+            });
+        });
+
+        // Dificultad
+        diffButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                diffButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                config.difficulty = btn.dataset.diff;
+            });
+        });
+
+        // Temas
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                themeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                config.theme = btn.dataset.theme;
+                
+                document.body.className = '';
+                if (themes[config.theme].bodyClass) {
+                    document.body.classList.add(themes[config.theme].bodyClass);
+                }
+                
+                applyTheme();
+            });
+        });
+
+        // Toggle Sonido Efectos (SFX)
+        btnSoundToggle.addEventListener('click', () => {
+            const soundCtx = sound.init();
+            music.init(soundCtx || sound.ctx);
+
+            const isMuted = sound.toggleMute();
+            if (isMuted) {
+                btnSoundToggle.classList.add('muted');
+                svgSoundOn.style.display = 'none';
+                svgSoundOff.style.display = 'block';
+            } else {
+                btnSoundToggle.classList.remove('muted');
+                svgSoundOn.style.display = 'block';
+                svgSoundOff.style.display = 'none';
+            }
+        });
+
+        // Toggle Música de Fondo (BGM)
+        btnMusicToggle.addEventListener('click', () => {
+            const soundCtx = sound.init();
+            music.init(soundCtx || sound.ctx);
+
+            const isMuted = music.toggleMute();
+            if (isMuted) {
+                btnMusicToggle.classList.add('muted');
+                svgMusicOn.style.display = 'none';
+                svgMusicOff.style.display = 'block';
+            } else {
+                btnMusicToggle.classList.remove('muted');
+                svgMusicOn.style.display = 'block';
+                svgMusicOff.style.display = 'none';
+                
+                // Si ya está corriendo el juego, asegura de iniciar el secuenciador
+                if (gameState.running && !gameState.paused) {
+                    music.start();
+                }
+            }
+        });
+
+        // Controles de Inicio del Juego
+        btnStartGame.addEventListener('click', () => {
+            const soundCtx = sound.init();
+            music.init(soundCtx || sound.ctx);
+            
+            startGame();
+        });
+
+        btnRestartGame.addEventListener('click', () => {
+            startGame();
+        });
+
+        btnReturnMenu.addEventListener('click', () => {
+            gameOverMenu.classList.add('hidden');
+            startMenu.classList.remove('hidden');
+            music.stop();
+        });
+
+        // --- INICIALIZAR Y CONTROLAR JUEGO ---
+
+        function applyTheme() {
+            const currentTheme = themes[config.theme];
+            player1.color = currentTheme.p1Color;
+            player2.color = currentTheme.p2Color;
+            ball.color = currentTheme.ballColor;
+            
+            const actBtn = document.querySelectorAll('.option-btn.active, .option-btn.active-magenta');
+            actBtn.forEach(btn => {
+                btn.className = 'option-btn';
+                if (config.theme === 'cyber') {
+                    btn.classList.add('active');
+                } else if (config.theme === 'sunset') {
+                    btn.classList.add('active-magenta');
+                } else {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function startGame() {
+            applyTheme();
+            
+            // Reset
+            gameState.scorePlayer1 = 0;
+            gameState.scorePlayer2 = 0;
+            gameState.winner = null;
+            gameState.paused = false;
+            
+            player1.y = canvas.height / 2 - paddleHeight / 2;
+            player2.y = canvas.height / 2 - paddleHeight / 2;
+            
+            startMenu.classList.add('hidden');
+            gameOverMenu.classList.add('hidden');
+            pauseIndicator.classList.remove('visible');
+            
+            resetBall(1); 
+            particles = [];
+            
+            // Iniciar e inicializar estados de personajes y música
+            updateCharacterStates();
+            music.start();
+            
+            if (!gameState.running) {
+                gameState.running = true;
+                lastTime = performance.now();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        function togglePause() {
+            gameState.paused = !gameState.paused;
+            if (gameState.paused) {
+                pauseIndicator.classList.add('visible');
+                music.stop();
+            } else {
+                pauseIndicator.classList.remove('visible');
+                lastTime = performance.now();
+                music.start();
+            }
+        }
+
+        function triggerScreenShake() {
+            wrapper.classList.add('shake');
+            setTimeout(() => {
+                wrapper.classList.remove('shake');
+            }, 150);
+        }
+
+        function createScoreExplosion(x, y, color) {
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function createHitExplosion(x, y, color) {
+            for (let i = 0; i < 15; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function resetBall(direction) {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.currentSpeed = ball.baseSpeed;
+            
+            const angle = (Math.random() * 40 - 20) * Math.PI / 180;
+            ball.speedX = direction * ball.currentSpeed * Math.cos(angle);
+            ball.speedY = ball.currentSpeed * Math.sin(angle);
+            ball.trail = [];
+        }
+
+        // --- SISTEMA IA ---
+        function runAI(dt) {
+            let aiReactionSpeed = 0.08;
+            let aiPredictionError = 15;
+
+            if (config.difficulty === 'easy') {
+                aiReactionSpeed = 0.05;
+                aiPredictionError = 45;
+            } else if (config.difficulty === 'hard') {
+                aiReactionSpeed = 0.16;
+                aiPredictionError = 5;
+            }
+
+            if (ball.speedX > 0) {
+                const targetY = ball.y - (player2.height / 2) + (Math.random() - 0.5) * aiPredictionError;
+                const diff = targetY - player2.y;
+                player2.y += diff * aiReactionSpeed * (dt * 60); 
+            } else {
+                const center = (canvas.height / 2) - (player2.height / 2);
+                player2.y += (center - player2.y) * 0.02 * (dt * 60);
+            }
+
+            if (player2.y < 5) player2.y = 5;
+            if (player2.y > canvas.height - player2.height - 5) {
+                player2.y = canvas.height - player2.height - 5;
+            }
+        }
+
+        // --- MOTOR DE FISICA (UPDATE) ---
+        function update(dt) {
+            if (gameState.paused || gameState.winner) return;
+
+            // Movimiento P1
+            if (keys['KeyW']) {
+                player1.y -= player1.speed * (dt * 60);
+                if (player1.y < 5) player1.y = 5;
+            }
+            if (keys['KeyS']) {
+                player1.y += player1.speed * (dt * 60);
+                if (player1.y > canvas.height - player1.height - 5) {
+                    player1.y = canvas.height - player1.height - 5;
+                }
+            }
+
+            // Movimiento P2
+            if (config.mode === '2P') {
+                if (keys['ArrowUp']) {
+                    player2.y -= player2.speed * (dt * 60);
+                    if (player2.y < 5) player2.y = 5;
+                }
+                if (keys['ArrowDown']) {
+                    player2.y += player2.speed * (dt * 60);
+                    if (player2.y > canvas.height - player2.height - 5) {
+                        player2.y = canvas.height - player2.height - 5;
+                    }
+                }
+            } else {
+                runAI(dt);
+            }
+
+            // Estela del Balón
+            ball.trail.push({x: ball.x, y: ball.y});
+            if (ball.trail.length > 8) ball.trail.shift();
+
+            ball.x += ball.speedX * (dt * 60);
+            ball.y += ball.speedY * (dt * 60);
+
+            // Colisión con Techo/Suelo
+            if (ball.y - ball.radius <= 0) {
+                ball.y = ball.radius;
+                ball.speedY = -ball.speedY;
+                sound.playWallHit();
+                createHitExplosion(ball.x, ball.y, themes[config.theme].ballColor);
+            } else if (ball.y + ball.radius >= canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.speedY = -ball.speedY;
+                sound.playWallHit();
+                createHitExplosion(ball.x, ball.y, themes[config.theme].ballColor);
+            }
+
+            // Colisiones Paleta Izquierda (Ángel / P1)
+            if (ball.speedX < 0 && 
+                ball.x - ball.radius <= player1.x + player1.width && 
+                ball.x + ball.radius >= player1.x) {
+                
+                if (ball.y >= player1.y && ball.y <= player1.y + player1.height) {
+                    let relativeY = (ball.y - (player1.y + player1.height / 2)) / (player1.height / 2);
+                    let angle = relativeY * (Math.PI / 3.5);
+
+                    ball.currentSpeed = Math.min(ball.currentSpeed + 0.6, ball.maxSpeed);
+                    ball.speedX = ball.currentSpeed * Math.cos(angle);
+                    ball.speedY = ball.currentSpeed * Math.sin(angle);
+                    ball.x = player1.x + player1.width + ball.radius; 
+                    
+                    sound.playPaddleHit();
+                    triggerScreenShake();
+                    createHitExplosion(ball.x - ball.radius, ball.y, player1.color);
+                }
+            }
+
+            // Colisiones Paleta Derecha (Diablito / P2)
+            if (ball.speedX > 0 && 
+                ball.x + ball.radius >= player2.x && 
+                ball.x - ball.radius <= player2.x + player2.width) {
+                
+                if (ball.y >= player2.y && ball.y <= player2.y + player2.height) {
+                    let relativeY = (ball.y - (player2.y + player2.height / 2)) / (player2.height / 2);
+                    let angle = relativeY * (Math.PI / 3.5);
+
+                    ball.currentSpeed = Math.min(ball.currentSpeed + 0.6, ball.maxSpeed);
+                    ball.speedX = -ball.currentSpeed * Math.cos(angle);
+                    ball.speedY = ball.currentSpeed * Math.sin(angle);
+                    ball.x = player2.x - ball.radius; 
+                    
+                    sound.playPaddleHit();
+                    triggerScreenShake();
+                    createHitExplosion(ball.x + ball.radius, ball.y, player2.color);
+                }
+            }
+
+            // --- Lógica de Anotación y Puntuación ---
+            if (ball.x - ball.radius < 0) {
+                // Anota Diablo (Jugador Derecha)
+                gameState.scorePlayer2++;
+                sound.playScore();
+                triggerScreenShake();
+                createScoreExplosion(ball.x, ball.y, player2.color);
+                
+                // Actualizar gestos (Diablito = scored, Ángel = missed)
+                updateCharacterStates({ p2Scored: true });
+                
+                checkGameOver();
+                if (!gameState.winner) resetBall(1); 
+            } else if (ball.x + ball.radius > canvas.width) {
+                // Anota Ángel (Jugador Izquierda)
+                gameState.scorePlayer1++;
+                sound.playScore();
+                triggerScreenShake();
+                createScoreExplosion(ball.x, ball.y, player1.color);
+                
+                // Actualizar gestos (Ángel = scored, Diablito = missed)
+                updateCharacterStates({ p1Scored: true });
+
+                checkGameOver();
+                if (!gameState.winner) resetBall(-1); 
+            }
+
+            // Actualizar Partículas
+            particles.forEach((p, idx) => {
+                p.update();
+                if (p.alpha <= 0) particles.splice(idx, 1);
+            });
+        }
+
+        // Fin de Juego
+        function checkGameOver() {
+            if (gameState.scorePlayer1 >= config.winningScore) {
+                gameState.winner = 'player1';
+                showGameOver();
+            } else if (gameState.scorePlayer2 >= config.winningScore) {
+                gameState.winner = 'player2';
+                showGameOver();
+            }
+        }
+
+        function showGameOver() {
+            sound.playVictory();
+            music.stop();
+            
+            if (gameState.winner === 'player1') {
+                winnerAnnouncement.textContent = '¡EL ÁNGEL GANA LA BATALLA!';
+                winnerAnnouncement.style.color = player1.color;
+                setPanelState(angelPanel, 'winning', 'CAMPEÓN');
+                setPanelState(devilPanel, 'losing', 'DERROTADO');
+            } else {
+                winnerAnnouncement.textContent = '¡EL DIABLITO GANA LA BATALLA!';
+                winnerAnnouncement.style.color = player2.color;
+                setPanelState(angelPanel, 'losing', 'DERROTADO');
+                setPanelState(devilPanel, 'winning', 'CAMPEÓN');
+            }
+            
+            gameOverMenu.classList.remove('hidden');
+        }
+
+        // --- SISTEMA DE RENDERIZADO (DRAW) ---
+        function draw() {
+            const currentTheme = themes[config.theme];
+            
+            ctx.fillStyle = currentTheme.canvasBg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Red intermedia
+            ctx.strokeStyle = currentTheme.gridLineColor;
+            ctx.lineWidth = 4;
+            ctx.setLineDash([15, 10]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]); 
+
+            // Puntuación de fondo gigante
+            ctx.font = '900 120px ' + getComputedStyle(document.body).getPropertyValue('--font-display');
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+            if (config.theme === 'cyber') ctx.fillStyle = 'rgba(0, 240, 255, 0.03)';
+            ctx.fillText(gameState.scorePlayer1, canvas.width / 4, canvas.height / 2);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+            if (config.theme === 'cyber') ctx.fillStyle = 'rgba(255, 0, 127, 0.03)';
+            ctx.fillText(gameState.scorePlayer2, 3 * canvas.width / 4, canvas.height / 2);
+
+            // Dibujar P1
+            ctx.save();
+            ctx.fillStyle = player1.color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = player1.color;
+            ctx.beginPath();
+            ctx.roundRect(player1.x, player1.y, player1.width, player1.height, 6);
+            ctx.fill();
+            ctx.restore();
+
+            // Dibujar P2
+            ctx.save();
+            ctx.fillStyle = player2.color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = player2.color;
+            ctx.beginPath();
+            ctx.roundRect(player2.x, player2.y, player2.width, player2.height, 6);
+            ctx.fill();
+            ctx.restore();
+
+            // Dibujar Estela
+            if (!gameState.paused && !gameState.winner) {
+                ball.trail.forEach((pos, index) => {
+                    const alpha = (index + 1) / ball.trail.length * 0.35;
+                    ctx.save();
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = ball.color;
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, ball.radius * (index / ball.trail.length), 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                });
+            }
+
+            // Dibujar Balón
+            ctx.save();
+            ctx.fillStyle = ball.color;
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = ball.color;
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(ball.x - 2, ball.y - 2, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // Dibujar Partículas
+            particles.forEach(p => p.draw(ctx));
+
+            // HUD superior
+            ctx.save();
+            ctx.font = '700 24px ' + getComputedStyle(document.body).getPropertyValue('--font-display');
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${gameState.scorePlayer1}   -   ${gameState.scorePlayer2}`, canvas.width / 2, 35);
+            ctx.restore();
+        }
+
+        // --- BUCLE PRINCIPAL ---
+        function gameLoop(time) {
+            if (!gameState.running) return;
+
+            let dt = (time - lastTime) / 1000;
+            if (dt > 0.1) dt = 0.1; 
+            
+            lastTime = time;
+
+            update(dt);
+            draw();
+
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>

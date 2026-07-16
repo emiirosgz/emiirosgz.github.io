@@ -1,0 +1,120 @@
+---
+import {ChevronDown} from "@/assets/icons"
+interface Props {
+    etiqueta?: string;
+    variante?:
+        | "naranja"
+        | "blanco"
+        | "borde"
+        | "link"
+        | "phill";
+    conIcono?: boolean;
+    href?: string;
+    className?:string;
+    // NUEVO: Arreglo opcional para crear el dropdown
+    items?: { url: string; label: string }[];
+}
+
+const {
+    etiqueta = "Botón",
+    variante = "naranja",
+    conIcono = false,
+    href,
+    className,
+    items
+} = Astro.props;
+
+const variantes = {
+    naranja: { css: "bg-(--accent) hover:bg-(--accent)/90 text-white" },
+    blanco: { css: "bg-(--white) hover:bg-white text-[#0A0A0A]" },
+    borde: { css: "border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all duration-300 text-(--white)" },
+    link: { css: "bg-transparent text-(--accent) hover:text-(--white) transition-colors" },
+    phill: {css: "rounded-full border border-white/10 px-4 py-2 text-sm text-(--lightgray) hover:border-(--accent) hover:text-(--accent) transition-colors"},
+}
+
+const style = variantes[variante];
+
+// Lógica para decidir qué renderizar
+const isDropdown = items && items.length > 1;
+const finalHref = isDropdown ? "#" : (items?.length === 1 ? items[0].url : href);
+const finalEtiqueta = isDropdown ? etiqueta : (items?.length === 1 ? items[0].label : etiqueta);
+---
+
+{isDropdown ? (
+  // MODO DROPDOWN: Usamos un custom element de HTML para encapsular el comportamiento
+  <drop-down class="relative inline-block">
+    <button class={`px-6 py-3 inline-flex items-center font-medium  transition-all gap-2 cursor-pointer ${style.css} btn-toggle`}>
+      {conIcono && (
+        <span class="flex items-center">
+          <slot name="icon" />
+        </span>
+      )}
+      {finalEtiqueta}
+      
+      {/* Ícono de flecha (chevron) para indicar que es un menú */}
+      <ChevronDown width="16" height="16" className="chevron transition-transform duration-200" />
+    </button>
+
+    {/* El menú desplegable (oculto por defecto con la clase 'hidden') */}
+    <div class="dropdown-menu absolute hidden top-full left-0 mt-2 w-full min-w-70 bg-black border border-neutral-800 shadow-2xl z-50 overflow-hidden">
+      <ul class="flex flex-col">
+        {items.map((art, idx) => (
+          <li class={idx !== items.length - 1 ? "border-b border-neutral-900" : ""}>
+            <a href={art.url} target="_blank" class="block px-4 py-4 text-xs font-mono text-neutral-400 hover:text-white hover:bg-neutral-900 hover:border-l-2 hover:border-red-600 transition-all">
+              {art.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </drop-down>
+) : (
+  // MODO NORMAL: Tu botón original
+  <a href={finalHref} class={`${className} px-6 py-3 inline-flex items-center font-medium transition-all gap-2 cursor-pointer ${style.css}`}>
+    {finalEtiqueta}
+    {conIcono && (
+      <span class="flex items-center">
+        <slot name="icon" />
+      </span>
+    )}
+  </a>
+)}
+
+<script>
+  // Lógica de Vanilla JS exclusiva para este componente
+  class DropDown extends HTMLElement {
+    connectedCallback() {
+      const btn = this.querySelector('.btn-toggle');
+      const menu = this.querySelector('.dropdown-menu');
+      const chevron = this.querySelector('.chevron');
+
+      if (!btn || !menu) return;
+
+      // Al hacer clic en el botón, alternamos la clase 'hidden'
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isClosed = menu.classList.contains('hidden');
+        
+        // Cierra cualquier otro dropdown abierto en la página por si tienes varios
+        document.querySelectorAll('drop-down .dropdown-menu').forEach(m => m.classList.add('hidden'));
+        document.querySelectorAll('drop-down .chevron').forEach(c => c.classList.remove('rotate-180'));
+
+        if (isClosed) {
+          menu.classList.remove('hidden');
+          chevron?.classList.add('rotate-180');
+        }
+      });
+
+      // Si hacemos clic en cualquier otra parte de la pantalla, se cierra
+      document.addEventListener('click', (e) => {
+        if (!this.contains(e.target as Node)) {
+          menu.classList.add('hidden');
+          chevron?.classList.remove('rotate-180');
+        }
+      });
+    }
+  }
+
+  // Le decimos al navegador que registre nuestra etiqueta <drop-down>
+  customElements.define('drop-down', DropDown);
+</script>

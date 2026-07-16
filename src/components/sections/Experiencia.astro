@@ -1,0 +1,16 @@
+---
+import InfoExpe from "./TituloSeccion.astro";
+import ExEmpleo from "../ui/BloqueExperiencia.astro";
+import {ExperienciaInfo as expeInfo} from "@/lib/consts"
+---
+<div id="experiencia" class="max-w-4xl mx-auto px-6 mb-24">
+    <InfoExpe titulo="Experiencia" numero="03" en="Experience"/>
+   {expeInfo.map((expe) => (
+       <ExEmpleo 
+            puesto={expe.puesto}
+            empresa={expe.empresa}
+            inicio={expe.fechaInicio}
+            fin={expe.fechaFin}
+            desc={expe.descripcion}/>
+   ))}
+</div>

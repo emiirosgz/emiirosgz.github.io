@@ -1,0 +1,12 @@
+---
+interface FAQItemProps {
+    pregunta: string;
+    respuesta: string;
+}
+const {pregunta,respuesta} = Astro.props;
+---
+
+<article class="mb-8">
+    <h3 class="font-medium text-xl mb-2">{pregunta}</h3>
+    <p class="text-(--lightgray) text-lg">{respuesta}</p>
+</article>

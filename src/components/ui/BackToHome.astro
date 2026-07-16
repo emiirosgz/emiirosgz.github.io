@@ -1,0 +1,13 @@
+---
+import { ChevronLeft } from '@/assets/icons'
+const wh = "20px"
+interface Props {
+    href: string;
+    label: string;
+}
+const { href, label } = Astro.props;
+---
+    <a href={href} class="flex items-center mb-2 gap-2 font-mono text-(--lightgray) hover:text-(--white)">
+        <ChevronLeft className='' width={wh} height={wh}/>
+        Volver a {label}
+    </a>

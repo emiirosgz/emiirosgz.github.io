@@ -1,0 +1,58 @@
+---
+import { Servicios } from "@/lib/consts";
+import Button from "../ui/Button.astro";
+import { ChevronRight } from "@/assets/icons";
+const wh = "24px";
+
+---
+<div class="space-y-24">
+{ Servicios.map((servicio) => (
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col lg:flex-row gap-12 lg:gap-24 items-center">
+            <div class="lg:w-1/2 slide-up-fade">
+                <div
+                    class="w-16 h-16 bg-[#141414] border border-white/10 flex items-center justify-center mb-8"
+                >
+                     {(() => {
+                        const Icon = servicio.icon;
+                        return <Icon className="" width={wh} height={wh} />;
+                    })()}
+                </div>
+                <h2 class="font-display text-3xl md:text-5xl font-medium mb-6">
+                    {servicio.titulo}
+                </h2>
+                <p class="text-[#A1A1AA] text-lg leading-relaxed mb-8">
+                    {servicio.descripcion}
+                </p>
+                <ul class="space-y-2 mb-10 font-mono text-sm">
+                    {servicio.lista.map((item:any) =>(
+                         <li class="flex items-center gap-3 pb-3">
+                            <div class="w-1.5 h-1.5 bg-(--accent) rounded-full">
+                            </div>
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+    
+                <Button href={`/servicios/${servicio.href}`} etiqueta="Ver detalle del servicio" variante="blanco" conIcono>
+                    <ChevronRight className="" width={wh} height={wh} slot="icon" />
+                </Button>
+    
+            </div>
+            <div
+                class="lg:w-1/2 w-full h-100 lg:h-150 bg-[#141414] relative overflow-hidden border border-white/5 slide-up-fade delay-200"
+            >
+                <img
+                    src={servicio.img}
+                    alt="Diseño & Experiencia"
+                    class="w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-700"
+                />
+                <div
+                    class="absolute inset-0 bg-linear-to-t from-[#0A0A0A] via-transparent to-transparent"
+                >
+                </div>
+            </div>
+        </div>
+    </div>
+))  }
+</div>

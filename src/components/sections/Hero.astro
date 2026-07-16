@@ -1,0 +1,80 @@
+---
+import { ChevronRight } from "@/assets/icons";
+import Button from "@/components/ui/Button.astro";
+import emiimg from "@/assets/imgs/emireth-rosas-03.png";
+import { Image } from "astro:assets";
+---
+
+<section class="w-full h-full overflow-hidden ">
+    <div class="max-w-500 mx-auto grid md:grid-cols-2 pt-16 gap-7 items-center relative">
+        <div class="max-w-2xl px-8 md:px-16 my-16 md:my-28 mx-auto z-10">
+            <!-- ping -->
+            <div class="flex items-center gap-3 mb-6">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-(--accent) opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-(--accent)"></span>
+                </span>
+                <span
+                    class="font-mono text-sm text-(--lightgray) tracking-wider uppercase"
+                    >
+                    Disponible para trabajar • 2026</span
+                >
+            </div>
+            <!-- texto hero -->
+            <h1
+                class="font-display text-4xl md:text-6xl font-medium leading-[1.1] tracking-tight mb-8"
+            >
+                Conectando 
+                <span class="text-(--lightgray)">
+                    estrategia, diseño
+                </span>
+                 y desarollo.
+            </h1>
+
+            <p
+                class="text-lg md:text-xl text-(--lightgray) max-w-2xl leading-relaxed mb-12"
+            >
+                Diseño experiencias digitales intuitivas, desarrollo productos
+                web escalables y estructuro contenido pensado para conectar
+                marcas con personas.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <Button
+                    variante="blanco"
+                    etiqueta="Trabajo destacado"
+                    href="#proyectos"
+                />
+                <Button
+                    variante="borde"
+                    etiqueta="Mis servicios"
+                    href="#skills"
+                    conIcono
+                >
+                    <ChevronRight
+                        slot="icon"
+                        width="16px"
+                        height="16px"
+                        className=""
+                    />
+                </Button>
+            </div>
+        </div>
+        <div class="grid">
+            <div
+                class="absolute inset-0 grayscale opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000"
+            >
+                <Image
+                    src={emiimg}
+                    alt="Emireth Rosas"
+                    class="w-full h-full object-cover"
+                />
+                <div class="absolute inset-0 pointer-events-none"
+                    style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.3) 2px, rgba(0, 0, 0, 0.3) 4px);">
+                </div>
+                <!-- <div class="absolute bottom-0 left-0 right-0 p-4 md:p-16 bg-linear-to-t from-[#0C0C0C] via-[#0C0C0C]/80 to-transparent">
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <!-- onClick={() => navigate('all-projects')} en boton -->
+</section>

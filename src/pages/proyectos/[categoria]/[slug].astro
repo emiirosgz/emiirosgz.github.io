@@ -1,0 +1,35 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Proyecto from '@/layouts/Proyectos.astro'
+import { getCategoryHref } from "@/lib/utils"; 
+
+export async function getStaticPaths(){
+    const projects = await getCollection('proyectos');
+    return projects.map((project) => ({
+        params: {
+            categoria: getCategoryHref(project.data.categoria), // Ahora sí funciona
+            slug: project.id,
+        },
+        props: project,
+    }));
+}
+
+type Props = CollectionEntry<'proyectos'>;
+
+const project  = Astro.props;
+const { Content } = await render(project);
+const { categoria, slug } = Astro.params;
+
+// También funciona aquí abajo
+const expectedCategoria = getCategoryHref(project.data.categoria);
+
+if (categoria !== expectedCategoria || slug !== project.id){
+    throw new Error (
+        `[404] La ruta no coincide con el proyecto: categoria= "${categoria}", slug= "${slug}"`
+    );
+}
+---
+
+<Proyecto {...project.data}>
+    <Content/>
+</Proyecto>

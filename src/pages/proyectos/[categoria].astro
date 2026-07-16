@@ -1,0 +1,54 @@
+---
+import { type CollectionEntry, getCollection} from "astro:content";
+import { AstroError } from 'astro/errors';
+import { NAV_ITEMS, CATEGORIAS } from "@/lib/consts";
+import Layout from '@/layouts/Layout.astro'
+import BackTo from "@/components/ui/BackToHome.astro";
+import ProyectosGrid from "@/components/sections/ProyectosGrid.astro";
+import Section from "@/components/ui/Section.astro";
+import Button from "@/components/ui/Button.astro"
+import TitleContent from "@/components/ui/TitleContent.astro";
+
+// volver a index 
+const navHref = NAV_ITEMS.find((n) => n.href === "/proyectos");
+
+type Props = CollectionEntry<"proyectos">["data"];
+
+export async function getStaticPaths() {
+  return CATEGORIAS.map((categoriaProject) => ({
+    params: {
+      categoria: categoriaProject.href,
+    },
+    props: {
+      categoriaId: categoriaProject.id,
+    },
+  }));
+}
+const { categoria } = Astro.params;
+const categoriaProject = CATEGORIAS.find((cat) => cat.href === categoria);
+if (!categoriaProject){
+  throw new AstroError(`Categoria "${categoria}" no localizada`); 
+}
+// obtener expedientes
+const projects = await getCollection("proyectos");
+const filteredProjects = projects.filter(
+  (projects) => projects.data.categoria === categoriaProject.id,
+);
+---
+<Layout title=`${categoriaProject.id}` description=`${categoriaProject.desc}`>
+    <Section>
+    {navHref
+        &&
+        <BackTo href={navHref.href} label="todos los proyectos"/>
+    }
+    <TitleContent h1={categoriaProject.id} p={categoriaProject.desc}/>
+    
+    <div class="mb-12 flex flex-wrap gap-3 items-center">
+      <span class="text-(--lightgray)"> Filtrar por: </span>
+      {CATEGORIAS.map((categoria) => (
+          <Button variante="phill" href={`/proyectos/${categoria.href}`} etiqueta={categoria.id}/>
+      ))}
+    </div>
+    <ProyectosGrid projects={filteredProjects} gridCol="3"/>
+    </Section>
+</Layout>

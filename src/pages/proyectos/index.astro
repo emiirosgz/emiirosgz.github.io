@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import { NAV_ITEMS, CATEGORIAS } from "@/lib/consts";
+import Layout from "@/layouts/Layout.astro";
+import BackTo from "@/components/ui/BackToHome.astro";
+import ProyectosGrid from "@/components/sections/ProyectosGrid.astro";
+import Section from "@/components/ui/Section.astro";
+import Button from "@/components/ui/Button.astro";
+import TitleContent from "@/components/ui/TitleContent.astro";
+
+const navHref = NAV_ITEMS.find((n) => n.href === "/");
+const projects = await getCollection("proyectos");
+const sortedProjects = [...projects].sort((a, b) => {
+    const yearA = a.data.anno ?? 0;
+    const yearB = b.data.anno ?? 0;
+    return yearB - yearA;
+});
+---
+
+<Layout title="Proyectos" description="Colección completa de proyectos.">
+    <Section>
+    {navHref && <BackTo href={navHref.href} label="inicio" />}
+    <TitleContent h1="Todos los proyectos" p="Explora la colección completa de trabajos sin filtrar. Selecciona una categoría para ver proyectos de clientes o experimentos personales."/>
+
+    <div class="mb-12 flex flex-wrap gap-3 items-center">
+        <span class="text-(--lightgray)"> Filtrar por: </span>
+        {CATEGORIAS.map((categoria) => (
+            <Button variante="phill" href={`/proyectos/${categoria.href}`} etiqueta={categoria.id}/>
+        ))}
+    </div>
+
+    {sortedProjects.length > 0 ? (
+        <ProyectosGrid projects={sortedProjects} gridCol="3" />
+    ) : (
+        <div class="text-(--lightgray) space-y-4">
+            <p class="text-lg">Todavía no hay proyectos publicados.</p>
+            <p>Regresa pronto para ver la colección completa de trabajos.</p>
+        </div>
+    )}
+    </Section>
+</Layout>

@@ -1,0 +1,27 @@
+---
+import InfoSeccion from '@/components/sections/TituloSeccion.astro'
+import emiimg from "@/assets/imgs/dev-emiirosgz.png";
+import { Image } from "astro:assets";
+---
+
+<div id="acercade" class="mb-20">
+    <InfoSeccion titulo="Sobre mi" numero="00" en="About"/>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div class="md:col-span-4">
+            <Image
+                src={emiimg}
+                alt="Emireth Rosas"
+                class="aspect-square max-w-70  rounded-full object-cover"
+            />
+        </div>
+        <div class="md:col-span-8 max-w-2xl flex flex-col justify-center">
+            <span class="font-display text-xm font-medium text-(--lightgray)"></span>
+            <p class="text-2xl md:text-3xl font-display font-medium leading-snug mb-6">
+                Soy Emireth Rosas.
+            </p>
+            <p class="text-(--lightgray) text-lg leading-relaxed">
+                +9 años de experiencia. <span class="grdt font-bold">Diseñadora Gráfica y Diseñadora Web</span> de Veracruz, México. Especializada en la creación de experiencias visuales atractivas y efectivas para productos digitales.
+            </p>
+        </div>
+    </div>
+</div>

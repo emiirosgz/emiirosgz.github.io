@@ -1,0 +1,18 @@
+---
+import { FAQsGenerales } from '@/lib/consts';
+import InfoSeccion from '@/components/sections/TituloSeccion.astro'
+import FAQItem from '@/components/ui/FAQItem.astro'
+---
+<section class="py-10 mb-24 lg:mb-32 bg-(--c-green-900)">
+    <div class="max-w-7xl mx-auto px-6 pt-16">
+        <InfoSeccion titulo="Preguntas Frecuentes" numero="04" en="FAQs"/>
+    
+        <div class="grid grid-cols-1 gap-6">
+            {FAQsGenerales.map((faq) => (
+                <FAQItem pregunta={faq.pregunta} respuesta={faq.respuesta} />
+            ))}
+        </div>
+    </div>
+
+
+</section>

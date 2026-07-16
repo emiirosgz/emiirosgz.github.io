@@ -1,11 +1,25 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { SITE_TITLE as title, SITE_DESCRIPTION as description } from '@/lib/consts';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Hero from "@/components/sections/Hero.astro";
+import Destacado from '@/components/sections/Destacado.astro'
+import MindSet from '@/components/sections/GridCardMindSet.astro'
+import ExploraMas from '@/components/ui/ExploraMas.astro';
+import Sobremi from '@/components/sections/Sobremi.astro';
+import FAQs from '@/components/sections/FAQs.astro'
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={title} description={description}>
+
+	<Hero/>
+	<MindSet/>
+	<div class="max-w-7xl mx-auto">
+		<Sobremi/>
+	</div>
+	<Destacado/>
+	<div class="pb-16 md:pb-32">
+		<ExploraMas overtext='Conoce más' titulo='Explora más trabajos'/>
+	</div>
+	<FAQs/>
+
 </Layout>

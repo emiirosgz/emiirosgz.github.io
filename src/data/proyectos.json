@@ -1,0 +1,48 @@
+[
+    {
+        "id": "Barradas2026",
+        "cliente": "Barradas Equipos Comerciales",
+        "title": "Content Pillar Strategy & Digital Audit",
+        "shortDesc": "Reestructuración arquitectónica y de SEO básico para potenciar el alcance orgánico.",
+        "fullDesc": "Auditoría intensiva del ecosistema digital de una empresa de equipos comerciales. Evaluación de canales, propuesta de reestructuración de contenido pilar y diagnóstico de mercado B2B/B2C.",
+        "category": "Client Work",
+        "year": 2026,
+        "role": "Analista de Marketing",
+        "tags": ["SEO", "B2B", "B2C", "Auditoria Digital"],
+        "imagen": " ",
+        "overview": "Un rediseño completo de la arquitectura de información para una plataforma de contenidos B2B. El objetivo era reducir la fricción en el descubrimiento de artículos y mejorar el posicionamiento SEO mediante una estrategia de pilares de contenido (Content Pillars).",
+        "reto": "El cliente tenía cientos de artículos valiosos pero aislados, resultando en altas tasas de rebote y bajo tiempo en página. La navegación no reflejaba el customer journey.",
+        "solucion": "Se diseñó un sistema de \"Hubs\" temáticos, interconectando el contenido mediante una jerarquía clara. Se documentó la estrategia visualmente y se implementaron guías de enlazado interno.",
+        "galery": ["img.jpg", "img.jpg"],
+        "galaryStyle": "",
+        "socialLinks": {
+            "behance": " ",
+            "instagram": "",
+            "facebook": ""
+        },
+        "linkWeb": ""
+    },
+    {
+        "id": "Illescas2025",
+        "cliente": "Asesor Automriz Illescas",
+        "title": "",
+        "shortDesc": "Diseño de piezas gráficas para redes sociales enfocado al sector automotriz.",
+        "fullDesc": "Fotografía y Diseño de elementos gráficos para campañas en redes sociales en Meta Business, para sector automotriz radicado en Xalapa, Veracruz.",
+        "category": "Client Work",
+        "year": 2026,
+        "role": "Analista de Marketing",
+        "tags": ["Social Media", "Fotografía", "B2C", "Local"],
+        "imagen": " ",
+        "overview": "Un rediseño completo de la arquitectura de información para una plataforma de contenidos B2B. El objetivo era reducir la fricción en el descubrimiento de artículos y mejorar el posicionamiento SEO mediante una estrategia de pilares de contenido (Content Pillars).",
+        "reto": "El cliente tenía cientos de artículos valiosos pero aislados, resultando en altas tasas de rebote y bajo tiempo en página. La navegación no reflejaba el customer journey.",
+        "solucion": "Se diseñó un sistema de \"Hubs\" temáticos, interconectando el contenido mediante una jerarquía clara. Se documentó la estrategia visualmente y se implementaron guías de enlazado interno.",
+        "galery": ["img.jpg", "img.jpg"],
+        "galaryStyle": "",
+        "socialLinks": {
+            "behance": " ",
+            "instagram": "",
+            "facebook": ""
+        },
+        "linkWeb": ""
+    }
+]

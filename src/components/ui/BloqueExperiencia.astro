@@ -1,0 +1,20 @@
+---
+const {
+    puesto,
+    empresa,
+    inicio,
+    fin, 
+    desc
+} = Astro.props; 
+---
+<div class="grid md:grid-cols-5 md:gap-10 space-y-8 mt-8 group relative pl-8 border-b border-neutral-600 hover:border-b-(--accent) transition-all min-h-full">
+    <div class="col-span-2 pb-4">
+        <h3 class="text-2xl font-black">{puesto}</h3>
+        <h4 class="text-[14px] font-light">{empresa}</h4>
+        <span class="text-xs text-neutral-500">{inicio} - {fin}</span>
+    </div>
+    <div class="col-span-3 text-sm text-neutral-400">
+       {desc}
+    </div>
+        <div class="absolute bottom-0 left-0 w-1 h-0 group-hover:h-full bg-(--accent) transition-all duration-300"></div>
+</div>

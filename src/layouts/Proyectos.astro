@@ -1,0 +1,144 @@
+---
+import BaseLayout from "@/layouts/Layout.astro";
+import { type CollectionEntry } from "astro:content";
+import { NAV_ITEMS } from "@/lib/consts";
+import {ExternalLink} from "@/assets/icons"
+import BackTo from "@/components/ui/BackToHome.astro";
+import Section from "@/components/ui/Section.astro";
+import ExploraMas from "@/components/ui/ExploraMas.astro";
+
+const wh = "16px"
+
+type Props = CollectionEntry<"proyectos">["data"];
+const {
+  categoria,
+  titulo,
+  short_desc,
+  anno,
+  cliente,
+  rol,
+  stack_tools,
+  imagen,
+  overview,
+  reto,
+  solucion,
+  link
+} = Astro.props;
+const imageSrc = typeof imagen === "string" ? imagen : imagen?.src;
+
+// volver a index
+const navHref = NAV_ITEMS.find((n) => n.href === "/proyectos");
+---
+
+<BaseLayout title={titulo} description={short_desc}>
+  <Section>
+    {navHref && <BackTo href={navHref.href} label="index" />}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+      <div class="lg:col-span-8">
+        <div
+          class="flex items-center gap-4 mb-4 font-mono text-sm text-(--lightgray) uppercase tracking-wider"
+        >
+          <span>
+            {categoria}
+          </span>
+          <span class="w-2 h-2 rounded-full bg-white/20"></span>
+          <span>
+            {anno}
+          </span>
+        </div>
+        <h1
+          class="font-display text-4xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-6"
+        >
+          {titulo}
+        </h1>
+        <p
+          class="text-xl md:text-2xl text-(--lightgray) font-display font-medium max-w-3xl"
+        >
+          {short_desc}
+        </p>
+      </div>
+      <div
+        class="lg:col-span-4 lg:text-right font-mono text-sm text-(--lightgray) border-l lg:border-l-0 lg:border-r border-white/10 pl-4 lg:pl-0 lg:pr-4"
+      >
+        <div class="space-y-4">
+          <div>
+            <span class="block text-(--white) mb-1"> Cliente </span>
+            {cliente}
+          </div>
+          <div>
+            <span class="block text-(--white) mb-1"> Rol </span>
+            {rol}
+          </div>
+          <div>
+            <span class="block text-(--white) mb-1"> Stack / Tools </span>
+            {
+              stack_tools
+                ? Array.isArray(stack_tools)
+                  ? stack_tools.join(", ")
+                  : stack_tools
+                : "No especificado"
+            }
+          </div>
+        </div>
+        {
+          link && (
+            <div class="mt-8 pt-6 border-t border-white/10 flex lg:justify-end">
+              <a
+                href={link}
+                target="_blank"
+                rel="noreferrer"
+                class="inline-flex items-center gap-2 text-(--accent) hover:text-white transition-colors font-medium"
+              >
+                <ExternalLink className="" width={wh} height={wh}/>
+                Ver proyecto en vivo
+              </a>
+            </div>
+          )
+        }
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 pt-24 gap-12 md:gap-16">
+      <div>
+        {
+          imageSrc ? (
+            <img
+              src={imageSrc}
+              alt={titulo}
+              class="w-full h-auto rounded-xl border border-white/10"
+              loading="lazy"
+            />
+          ) : null
+        }
+      </div>
+      <div>
+        <div class="flex flex-col gap-4">
+          <div class="">
+            <h2
+              class="font-display text-2xl mb-6 border-b border-white/10 pb-4"
+            >
+              Overview
+            </h2>
+            <p class="text-lg text-(--lightgray) leading-relaxed mb-8">
+              {overview}
+            </p>
+          </div>
+          <div class="bg-(--deepgray) border border-white/5 p-8">
+            <h3 class="font-display text-xl mb-4 text-(--accent)">El Reto</h3>
+            <p class="text-(--lightgray) leading-relaxed text-sm">
+              {reto}
+            </p>
+          </div>
+          <div class="bg-(--deepgray) border border-white/5 p-8">
+            <h3 class="font-display text-xl mb-4 text-(--white)">
+              La Solución
+            </h3>
+            <p class="text-(--lightgray) leading-relaxed text-sm">
+              {solucion}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ExploraMas overtext="End of Project" titulo="Explorar más trabajos" />
+  </Section>
+</BaseLayout>
