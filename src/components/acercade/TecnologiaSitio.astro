@@ -1,0 +1,117 @@
+---
+import InfoSeccion from '@/components/sections/TituloSeccion.astro';
+import { Astro as AstroIcon, React as ReactIcon, Tailwind } from '@/assets/icons/brands';
+import { Code } from '@/assets/icons';
+
+const siteTechs = [
+    {
+        name: "Astro 5/6",
+        role: "Core Web Framework & SSG",
+        desc: "Framework principal de renderizado estático y arquitectura de islas (Islands Architecture). Garantiza un envío mínimo de JavaScript al cliente y tiempos de carga instantáneos.",
+        Icon: AstroIcon,
+        badge: "Arquitectura Híbrida"
+    },
+    {
+        name: "React 19",
+        role: "Componentes Interactivos",
+        desc: "Utilizado para los componentes que requieren estado y dinamismo en el navegador, como los menús, selectores interactivos y acordeones de información.",
+        Icon: ReactIcon,
+        badge: "Hidratación Selectiva"
+    },
+    {
+        name: "Tailwind CSS v4 + Vanilla CSS",
+        role: "Sistema de Estilos & Design Tokens",
+        desc: "Combinación de Tailwind v4 y variables atómicas CSS (`:root`) para manejar dark mode nativo, paletas de color responsivas y efectos de vidrio esmerilado (glassmorphism).",
+        Icon: Tailwind,
+        badge: "Dark Mode Glass"
+    },
+    {
+        name: "TypeScript",
+        role: "Tipado Estático & Estructura",
+        desc: "Asegura la calidad del código mediante la definición estricta de tipos de datos, props de componentes y constantes del sitio web.",
+        Icon: Code,
+        badge: "Type Safe"
+    }
+];
+
+const siteMetrics = [
+    { label: "Rendimiento Lighthouse", value: "100/100" },
+    { label: "Carga Inicial", value: "< 0.4s" },
+    { label: "Arquitectura", value: "SSG + Islands" },
+    { label: "JavaScript en Cliente", value: "Ultraligero" }
+];
+---
+
+<div id="tecnologia-sitio" class="mb-28">
+    <InfoSeccion titulo="¿Con qué tecnología se realizó este sitio web?" en="Built With"/>
+    
+    <p class="text-(--lightgray) text-lg max-w-3xl mb-12 -mt-10 leading-relaxed">
+        Este portafolio fue construido desde cero aplicando estándares modernos de desarrollo web, primando el rendimiento, la accesibilidad y una estética impecable en dark mode con efecto glassmorphism.
+    </p>
+
+    <!-- Highlight Hero Banner -->
+    <div class="relative bg-linear-to-r from-white/5 via-white/2 to-transparent backdrop-blur-2xl border border-white/10 rounded-3xl p-8 md:p-10 mb-8 overflow-hidden">
+        <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-(--accent)/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+            <div>
+                <span class="inline-block text-xs font-mono px-3 py-1 rounded-full bg-(--accent)/20 text-(--accent) border border-(--accent)/30 mb-3">
+                    // Stack técnico del sitio
+                </span>
+                <h3 class="font-display text-2xl md:text-3xl font-medium text-white mb-2">
+                    Arquitectura de Alto Rendimiento
+                </h3>
+                <p class="text-(--lightgray) text-base max-w-2xl">
+                    Diseñado sin constructores pesados ni dependencias redundantes, priorizando la semántica HTML5, variables CSS personalizadas y compilación en tiempo de construcción.
+                </p>
+            </div>
+            
+            <a 
+                href="https://github.com/emiirosgz" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="shrink-0 px-6 py-3 rounded-full bg-white/10 hover:bg-(--accent) hover:text-black border border-white/20 text-white font-display font-medium text-sm transition-all duration-300 shadow-lg flex items-center gap-2"
+            >
+                Ver en GitHub
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-white/10">
+            {siteMetrics.map((metric) => (
+                <div class="bg-black/30 backdrop-blur-md rounded-2xl p-4 border border-white/5">
+                    <span class="block text-xs font-mono text-(--lightgray) mb-1">{metric.label}</span>
+                    <span class="font-display text-xl font-bold text-(--accent)">{metric.value}</span>
+                </div>
+            ))}
+        </div>
+    </div>
+
+    <!-- Tech cards grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {siteTechs.map((tech) => (
+            <div class="bg-white/2 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-(--accent)/40 transition-all duration-300 flex items-start gap-5 group">
+                <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 text-(--accent) group-hover:scale-105 group-hover:bg-(--accent)/20 transition-all">
+                    <tech.Icon className="w-7 h-7" width="28" height="28" />
+                </div>
+                <div class="grow min-w-0">
+                    <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between gap-2 mb-4">
+                        <h4 class="font-display text-lg font-medium text-white group-hover:text-(--accent) transition-colors">
+                            {tech.name}
+                        </h4>
+                        <span class="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 text-(--accent) border border-white/10">
+                            {tech.badge}
+                        </span>
+                    </div>
+                    <span class="block text-xs font-mono text-(--lightgray)/80 mb-2">{tech.role}</span>
+                    <p class="text-sm text-(--lightgray) leading-relaxed">
+                        {tech.desc}
+                    </p>
+                </div>
+            </div>
+        ))}
+    </div>
+</div>

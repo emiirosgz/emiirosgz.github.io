@@ -1,0 +1,98 @@
+---
+import InfoSeccion from '@/components/sections/TituloSeccion.astro';
+import { 
+    Figma, Adobe, Affinity, Davinci, PowerPoint,
+    Astro as AstroIcon, React as ReactIcon, JavaScript, Tailwind, VSC,
+    Linux, GitHub, SQL, Hostinger,
+    GoogleAnalitycs, SearchConsole, Semrush, Excel
+} from '@/assets/icons/brands';
+
+const stackCategories = [
+    {
+        title: "Diseño & UI/UX",
+        desc: "Herramientas de maquetado, prototipado y dirección de arte visual.",
+        items: [
+            { name: "Figma", level: "Avanzado", Icon: Figma },
+            { name: "Adobe Suite", level: "Avanzado", Icon: Adobe },
+            { name: "Affinity", level: "Intermedio", Icon: Affinity },
+            { name: "DaVinci Resolve", level: "Intermedio", Icon: Davinci },
+            { name: "PowerPoint", level: "Avanzado", Icon: PowerPoint },
+        ]
+    },
+    {
+        title: "Desarrollo Frontend",
+        desc: "Tecnologías modernas para desarrollo web ultrarrápido y limpio.",
+        items: [
+            { name: "Astro", level: "Avanzado", Icon: AstroIcon },
+            { name: "React", level: "Intermedio+", Icon: ReactIcon },
+            { name: "JavaScript", level: "Avanzado", Icon: JavaScript },
+            { name: "Tailwind CSS", level: "Avanzado", Icon: Tailwind },
+            { name: "VS Code", level: "Dominio total", Icon: VSC },
+        ]
+    },
+    {
+        title: "Infraestructura & Servidores",
+        desc: "Gestión de repositorios, despliegues y entorno de servidores Linux.",
+        items: [
+            { name: "Linux / WSL2", level: "Avanzado", Icon: Linux },
+            { name: "Git & GitHub", level: "Avanzado", Icon: GitHub },
+            { name: "Hostinger", level: "Avanzado", Icon: Hostinger },
+            { name: "Bases de Datos SQL", level: "Intermedio", Icon: SQL },
+        ]
+    },
+    {
+        title: "SEO & Analítica Digital",
+        desc: "Optimización orgánica, auditoría de tráfico y rendimiento.",
+        items: [
+            { name: "Google Analytics", level: "Avanzado", Icon: GoogleAnalitycs },
+            { name: "Search Console", level: "Avanzado", Icon: SearchConsole },
+            { name: "Semrush", level: "Intermedio", Icon: Semrush },
+            { name: "Excel / Datos", level: "Avanzado", Icon: Excel },
+        ]
+    }
+];
+---
+
+<div id="stack" class="mb-28">
+    <InfoSeccion titulo="Stack Tecnológico" en="Tech Stack"/>
+    
+    <p class="text-(--lightgray) text-lg max-w-3xl mb-12 -mt-10 leading-relaxed">
+        Conjunto de herramientas, lenguajes y plataformas que utilizo diariamente para concebir, diseñar, desarrollar y optimizar productos digitales de alto impacto.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {stackCategories.map((category) => (
+            <div class="bg-white/2 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 hover:border-(--accent)/40 transition-all duration-500 shadow-xl group">
+                <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between gap-2 mb-4">
+                    <h3 class="font-display text-xl md:text-2xl font-medium text-white group-hover:text-(--accent) transition-colors">
+                        {category.title}
+                    </h3>
+                    <span class="text-xs font-mono px-3 py-1 rounded-full bg-white/5 border border-white/10 text-(--accent)">
+                        {category.items.length} herramientas
+                    </span>
+                </div>
+                <p class="text-(--lightgray) text-sm mb-6 leading-relaxed">
+                    {category.desc}
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {category.items.map((item) => (
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-black/40 border border-white/5 hover:border-(--accent)/50 hover:bg-white/[0.05] transition-all duration-300">
+                            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                <item.Icon className="w-6 h-6 object-contain" width="24" height="24" />
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-display text-sm font-medium text-white truncate">
+                                    {item.name}
+                                </span>
+                                <span class="text-[11px] font-mono text-(--lightgray)/70 truncate">
+                                    {item.level}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ))}
+    </div>
+</div>

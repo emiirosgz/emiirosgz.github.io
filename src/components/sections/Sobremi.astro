@@ -4,14 +4,19 @@ import emiimg from "@/assets/imgs/dev-emiirosgz.png";
 import { Image } from "astro:assets";
 ---
 
-<div id="acercade" class="mb-20">
-    <InfoSeccion titulo="Sobre mi" numero="00" en="About"/>
+<div class="mb-20">
+    <InfoSeccion titulo="Sobre mi" en="About"/>
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
         <div class="md:col-span-4">
             <Image
                 src={emiimg}
                 alt="Emireth Rosas"
-                class="aspect-square max-w-70  rounded-full object-cover"
+                class="aspect-square max-w-70 rounded-full object-cover"
+                loading="lazy"
+                decoding="async"
+                width={400}
+                height={400}
+                quality={85}
             />
         </div>
         <div class="md:col-span-8 max-w-2xl flex flex-col justify-center">

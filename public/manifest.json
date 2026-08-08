@@ -1,0 +1,23 @@
+{
+  "name": "Emii Rosgz | Portafolio Profesional",
+  "short_name": "Emii Rosgz",
+  "description": "Diseñadora multidisciplinaria y desarrolladora web especializada en UI/UX, desarrollo frontend y consultoría SEO.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#85C61C",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 import { Servicios } from "@/lib/consts";
 import Button from "../ui/Button.astro";
 import { ChevronRight } from "@/assets/icons";
+import { Image } from "astro:assets";
+import { resolveImage } from "@/lib/utils";
 const wh = "24px";
 
 ---
@@ -42,9 +44,14 @@ const wh = "24px";
             <div
                 class="lg:w-1/2 w-full h-100 lg:h-150 bg-[#141414] relative overflow-hidden border border-white/5 slide-up-fade delay-200"
             >
-                <img
-                    src={servicio.img}
-                    alt="Diseño & Experiencia"
+                <Image
+                    src={resolveImage(servicio.img)}
+                    alt={servicio.titulo}
+                    loading="lazy"
+                    decoding="async"
+                    width={800}
+                    height={600}
+                    quality={80}
                     class="w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-700"
                 />
                 <div

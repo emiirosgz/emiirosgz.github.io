@@ -3,14 +3,16 @@ import Layout from "@/layouts/Layout.astro";
 import Section from "@/components/ui/Section.astro";
 import TitleContent from "@/components/ui/TitleContent.astro";
 import ServicioItem from "@/components/sections/ServicioItem.astro";
+import CtaReunion from "@/components/sections/CtaReunion.astro";
 
 const titulo = "Soluciones integrales";
 const parrafo = "De la estrategia a la pantalla. Ofrezco un enfoque holístico para asegurar que tu presencia digital no solo luzca impecable, sino que funcione como un activo de crecimiento para tu negocio.";
 ---
-<Layout title="" description="">
+<Layout title="Servicios" description={parrafo}>
     <Section>
         <TitleContent h1={titulo} p={parrafo}/>
         
         <ServicioItem/>
     </Section>
+    <CtaReunion />
 </Layout>

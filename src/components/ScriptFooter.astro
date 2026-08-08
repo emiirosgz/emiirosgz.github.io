@@ -1,0 +1,32 @@
+---
+
+---
+    <!-- Clarity -->
+     <script is:inline type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "xt6dlx7g3s");
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-SHS6TJCW5G"></script>
+    <script is:inline defer type="text/javascript">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+
+        // Verificar el estado de consentimiento previo en localStorage
+        var savedConsent = typeof localStorage !== 'undefined' ? localStorage.getItem('cookie_consent') : null;
+        var initialConsent = savedConsent === 'granted' ? 'granted' : 'denied';
+
+        gtag('consent', 'default', {
+            'analytics_storage': initialConsent,
+            'ad_storage': initialConsent,
+            'ad_user_data': initialConsent,
+            'ad_personalization': initialConsent
+        });
+
+        gtag('js', new Date());
+        gtag('config', 'G-SHS6TJCW5G');
+    </script>

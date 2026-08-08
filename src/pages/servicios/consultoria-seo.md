@@ -10,12 +10,13 @@ beneficio:
     - 'Optimización de contenido, estructura y posicionamiento en motores de búsqueda'
     - 'Seguimiento y análisis constante de los resultados'
 capacidades:
+    - 'Optimización de motores de búsqueda'
     - 'Arquitectura de contenido'
     - 'Estrategia SEO y SEM'
     - 'Marketing Analysis B2B/B2C'
 stack:
-    - 'Google Analitycs'
+    - 'Google Analytics'
     - 'Search Console'
-    - 'Semrush (básico)'
+    - 'Semrush'
     - 'Excel'
 ---

@@ -1,0 +1,81 @@
+---
+import InfoSeccion from '@/components/sections/TituloSeccion.astro';
+import { Layers, Globe, Code, Database, ChevronRight } from '@/assets/icons';
+import { Servicios } from '@/lib/consts';
+import { basePath } from '@/lib/utils';
+
+const iconsMap: Record<string, any> = {
+    "diseno-experiencia": Layers,
+    "consultoria-seo": Globe,
+    "desarrollo-web": Code,
+    "alojamiento-web": Database,
+};
+---
+
+<div id="servicios-dominados" class="mb-28">
+    <InfoSeccion titulo="Servicios que Domino" en="Core Capabilities"/>
+    
+    <p class="text-(--lightgray) text-lg max-w-3xl mb-12 -mt-10 leading-relaxed">
+        Resumen de las áreas de conocimiento y capacidades técnicas en las que ofrezco resultados profesionales, desde el planteamiento visual hasta la infraestructura final.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {Servicios.map((servicio) => {
+            const IconComp = iconsMap[servicio.id] || Layers;
+            return (
+                <div class="bg-linear-to-br from-white/4 to-white/1 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:border-(--accent)/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(133,198,28,0.12)] flex flex-col justify-between group relative overflow-hidden">
+                    {/* <!-- Subtle glass light effect --> */}
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-(--accent)/10 rounded-full blur-3xl group-hover:bg-(--accent)/25 transition-all duration-700 pointer-events-none"></div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-(--accent) group-hover:scale-110 group-hover:bg-(--accent) group-hover:text-black transition-all duration-500 shadow-md">
+                                <IconComp width="28" height="28" className="stroke-[1.75]" />
+                            </div>
+                            <span class="font-mono text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-(--lightgray)">
+                                Dominio Profesional
+                            </span>
+                        </div>
+
+                        <h3 class="font-display text-2xl font-medium text-white mb-3 group-hover:text-(--accent) transition-colors">
+                            {servicio.titulo}
+                        </h3>
+
+                        <p class="text-(--lightgray) text-base leading-relaxed mb-6">
+                            {servicio.descripcion}
+                        </p>
+
+                        {/* <!-- Sub-list items --> */}
+                        {servicio.lista && (
+                            <ul class="space-y-2 mb-8 border-t border-white/5 pt-4">
+                                {servicio.lista.map((item) => (
+                                    <li class="flex items-center text-sm font-sans text-gray-300">
+                                        <span class="text-(--accent) mr-2">─</span>
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    <div class="pt-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center md:justify-between mt-auto gap-4">
+                        <div class="flex flex-wrap gap-2">
+                            {(servicio.stack ?? []).slice(0, 3).map((tech) => (
+                                <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-black/60 border border-white/10 text-gray-300">
+                                    {tech}
+                                </span>
+                            ))}
+                        </div>
+                        <a 
+                            href={basePath(`/servicios/${servicio.id}`)} 
+                            class="inline-flex items-center gap-1 text-sm font-display font-medium text-(--accent) hover:underline group-hover:translate-x-1 transition-transform"
+                        >
+                            Saber más
+                            <ChevronRight width="16" height="16" />
+                        </a>
+                    </div>
+                </div>
+            );
+        })}
+    </div>
+</div>

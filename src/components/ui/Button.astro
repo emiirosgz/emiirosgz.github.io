@@ -1,9 +1,10 @@
 ---
 import {ChevronDown} from "@/assets/icons"
+import { basePath } from "@/lib/utils";
 interface Props {
     etiqueta?: string;
     variante?:
-        | "naranja"
+        | "acento"
         | "blanco"
         | "borde"
         | "link"
@@ -17,7 +18,7 @@ interface Props {
 
 const {
     etiqueta = "Botón",
-    variante = "naranja",
+    variante = "acento",
     conIcono = false,
     href,
     className,
@@ -25,7 +26,7 @@ const {
 } = Astro.props;
 
 const variantes = {
-    naranja: { css: "bg-(--accent) hover:bg-(--accent)/90 text-white" },
+    acento: { css: "bg-(--accent) hover:bg-(--accent)/90 text-black" },
     blanco: { css: "bg-(--white) hover:bg-white text-[#0A0A0A]" },
     borde: { css: "border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all duration-300 text-(--white)" },
     link: { css: "bg-transparent text-(--accent) hover:text-(--white) transition-colors" },
@@ -36,14 +37,15 @@ const style = variantes[variante];
 
 // Lógica para decidir qué renderizar
 const isDropdown = items && items.length > 1;
-const finalHref = isDropdown ? "#" : (items?.length === 1 ? items[0].url : href);
+const rawHref = isDropdown ? "#" : (items?.length === 1 ? items[0].url : href);
+const finalHref = rawHref && rawHref !== '#' ? basePath(rawHref) : rawHref;
 const finalEtiqueta = isDropdown ? etiqueta : (items?.length === 1 ? items[0].label : etiqueta);
 ---
 
 {isDropdown ? (
   // MODO DROPDOWN: Usamos un custom element de HTML para encapsular el comportamiento
   <drop-down class="relative inline-block">
-    <button class={`px-6 py-3 inline-flex items-center font-medium  transition-all gap-2 cursor-pointer ${style.css} btn-toggle`}>
+    <button class={`px-6 py-3 inline-flex items-center font-medium transition-all duration-300 gap-2 cursor-pointer rounded-xl ${style.css} btn-toggle`}>
       {conIcono && (
         <span class="flex items-center">
           <slot name="icon" />
@@ -60,7 +62,7 @@ const finalEtiqueta = isDropdown ? etiqueta : (items?.length === 1 ? items[0].la
       <ul class="flex flex-col">
         {items.map((art, idx) => (
           <li class={idx !== items.length - 1 ? "border-b border-neutral-900" : ""}>
-            <a href={art.url} target="_blank" class="block px-4 py-4 text-xs font-mono text-neutral-400 hover:text-white hover:bg-neutral-900 hover:border-l-2 hover:border-red-600 transition-all">
+            <a href={art.url} target="_blank" class="block px-4 py-4 text-xs font-mono text-neutral-400 hover:text-white hover:bg-neutral-900 hover:border-l-2 hover:border-red-600 transition-all duration-300">
               {art.label}
             </a>
           </li>
@@ -69,11 +71,11 @@ const finalEtiqueta = isDropdown ? etiqueta : (items?.length === 1 ? items[0].la
     </div>
   </drop-down>
 ) : (
-  // MODO NORMAL: Tu botón original
-  <a href={finalHref} class={`${className} px-6 py-3 inline-flex items-center font-medium transition-all gap-2 cursor-pointer ${style.css}`}>
+  // MODO NORMAL: botón original
+  <a href={finalHref} class={`${className} group px-6 py-3 inline-flex items-center font-medium transition-all gap-2 cursor-pointer rounded-xl ${style.css}`}>
     {finalEtiqueta}
     {conIcono && (
-      <span class="flex items-center">
+      <span class="flex items-center transition-transform group-hover:translate-x-1">
         <slot name="icon" />
       </span>
     )}

@@ -1,0 +1,71 @@
+---
+import Section from "@/components/ui/Section.astro";
+import {Calendar} from "@/assets/icons";
+
+interface Props {
+    titulo?: string;
+    subtitulo?: string;
+    descripcion?: string;
+    className?: string;
+}
+
+const {
+    titulo = "Agenda una reunión inicial",
+    subtitulo = "Hablemos de tu proyecto",
+    descripcion = "Conversemos durante 15 minutos sobre las necesidades de tu negocio, alcances del proyecto y cómo podemos construir la solución digital ideal. Elige el día y la hora que mejor te acomoden.",
+    className = ""
+} = Astro.props;
+
+const CALENDAR_URL = "https://calendar.app.google/VQWNihGwAShv9MPb9";
+---
+
+<Section class={`my-16 md:my-24 ${className}`}>
+    <div class="relative overflow-hidden bg-linear-to-b from-[#141414] to-[#0A0A0A] border border-white/10 hover:border-(--accent)/40 rounded-3xl p-8 sm:p-12 text-center transition-all duration-500 group shadow-2xl">
+        <!-- Resplandor de fondo -->
+        <div class="absolute -top-28 left-1/2 -translate-x-1/2 w-96 h-96 bg-(--accent)/15 rounded-full blur-3xl pointer-events-none group-hover:bg-(--accent)/25 transition-all duration-700"></div>
+
+        <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+            <!-- Insignia -->
+            <span class="px-4 py-1.5 text-xs font-mono tracking-widest text-(--accent) bg-(--accent)/10 border border-(--accent)/20 rounded-full uppercase mb-6 inline-block">
+                {subtitulo}
+            </span>
+
+            <!-- Título Principal -->
+            <h3 class="font-display text-3xl sm:text-4xl md:text-5xl font-medium text-white mb-6 leading-tight">
+                {titulo}
+            </h3>
+
+            <!-- Descripción -->
+            <p class="text-base md:text-lg text-[#A1A1AA] font-light leading-relaxed mb-8 max-w-xl">
+                {descripcion}
+            </p>
+
+            <!-- Características destacadas (Badges rápidos) -->
+            <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mb-8 text-xs font-mono text-neutral-300">
+                <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl">
+                    <span class="w-2 h-2 rounded-full bg-(--accent)"></span>
+                    <span>15 min · Sin costo</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl">
+                    <span class="w-2 h-2 rounded-full bg-(--accent)"></span>
+                    <span>Asesoría directa</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl">
+                    <span class="w-2 h-2 rounded-full bg-(--accent)"></span>
+                    <span>Google Calendar</span>
+                </div>
+            </div>
+
+            <!-- Botón CTA principal -->
+            <a 
+                href={CALENDAR_URL}
+                target="_blank"
+                rel="noreferrer"
+                class="inline-flex items-center justify-center gap-3 bg-(--accent) hover:bg-(--accent)/90 text-black font-medium py-4 px-8 rounded-xl transition-all duration-300 shadow-lg shadow-(--accent)/15 hover:shadow-(--accent)/30 hover:-translate-y-0.5 text-base group/btn cursor-pointer"
+            >
+                <span>Agendar reunión ahora</span>
+                <Calendar className="w-5 h-5 transition-transform group-hover/btn:translate-x-1" />
+            </a>
+        </div>
+    </div>
+</Section>

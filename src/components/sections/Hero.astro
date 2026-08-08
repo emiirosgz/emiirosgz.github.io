@@ -1,80 +1,122 @@
 ---
 import { ChevronRight } from "@/assets/icons";
 import Button from "@/components/ui/Button.astro";
-import emiimg from "@/assets/imgs/emireth-rosas-03.png";
+import emiimg from "@/assets/imgs/dev-emiirospng.png";
 import { Image } from "astro:assets";
 ---
 
-<section class="w-full h-full overflow-hidden ">
-    <div class="max-w-500 mx-auto grid md:grid-cols-2 pt-16 gap-7 items-center relative">
-        <div class="max-w-2xl px-8 md:px-16 my-16 md:my-28 mx-auto z-10">
-            <!-- ping -->
-            <div class="flex items-center gap-3 mb-6">
-                <span class="relative flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-(--accent) opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-(--accent)"></span>
-                </span>
-                <span
-                    class="font-mono text-sm text-(--lightgray) tracking-wider uppercase"
-                    >
-                    Disponible para trabajar • 2026</span
-                >
-            </div>
-            <!-- texto hero -->
-            <h1
-                class="font-display text-4xl md:text-6xl font-medium leading-[1.1] tracking-tight mb-8"
-            >
-                Conectando 
-                <span class="text-(--lightgray)">
-                    estrategia, diseño
-                </span>
-                 y desarollo.
-            </h1>
-
-            <p
-                class="text-lg md:text-xl text-(--lightgray) max-w-2xl leading-relaxed mb-12"
-            >
-                Diseño experiencias digitales intuitivas, desarrollo productos
-                web escalables y estructuro contenido pensado para conectar
-                marcas con personas.
-            </p>
-            <div class="flex flex-wrap gap-4">
-                <Button
-                    variante="blanco"
-                    etiqueta="Trabajo destacado"
-                    href="#proyectos"
-                />
-                <Button
-                    variante="borde"
-                    etiqueta="Mis servicios"
-                    href="#skills"
-                    conIcono
-                >
-                    <ChevronRight
-                        slot="icon"
-                        width="16px"
-                        height="16px"
-                        className=""
-                    />
-                </Button>
-            </div>
-        </div>
-        <div class="grid">
+<section class="max-w-7xl mx-auto h-full overflow-hidden">
+    <div
+        class="mx-auto grid md:grid-cols-4 pt-20 px-8 md:px-16 gap-4 mb-16 relative"
+    >
+        <!-- div con relative para colocarle fondo animado -->
+        <div
+            id="hero-card"
+            class="bg-(--c-gray-900)/70 backdrop-blur-2xl border border-white/10 rounded-3xl md:col-span-3 p-8 md:p-10 lg:p-16 relative overflow-hidden shadow-2xl transition-all duration-500"
+        >
+            <!-- ===== FONDO ANIMADO INFINITO ESTILO GLASSMORPHISM ===== -->
             <div
-                class="absolute inset-0 grayscale opacity-40 group-hover:opacity-60 group-hover:scale-105 transition-all duration-1000"
+                class="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl z-0"
             >
-                <Image
-                    src={emiimg}
-                    alt="Emireth Rosas"
-                    class="w-full h-full object-cover"
-                />
-                <div class="absolute inset-0 pointer-events-none"
-                    style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.3) 2px, rgba(0, 0, 0, 0.3) 4px);">
+                <!-- Orbes/Manchas de gradientes flotantes con la paleta de colores oficial -->
+                <div class="glass-blob glass-blob-1"></div>
+                <div class="glass-blob glass-blob-2"></div>
+                <div class="glass-blob glass-blob-3"></div>
+
+                <!-- Malla de gradiente fluido en rotación suave -->
+                <div class="glass-mesh"></div>
+
+                <!-- Patrón de rejilla sutil para mayor profundidad -->
+                <div class="glass-grid"></div>
+
+                <!-- Capa de difuminado frosted glass -->
+                <div
+                    class="absolute inset-0 bg-(--c-gray-900)/40 backdrop-blur-[60px]"
+                >
                 </div>
-                <!-- <div class="absolute bottom-0 left-0 right-0 p-4 md:p-16 bg-linear-to-t from-[#0C0C0C] via-[#0C0C0C]/80 to-transparent">
-                </div> -->
+
+                <!-- Overlay negro degradado de abajo hacia arriba a transparente -->
+                <div
+                    class="absolute inset-0 bg-linear-to-t from-(--c-gray-950) via-(--c-gray-950)/60 to-transparent"
+                >
+                </div>
+            </div>
+
+            <!-- Borde reluciente interior estilo Glassmorphism -->
+            <div
+                class="absolute inset-0 rounded-3xl border border-white/10 pointer-events-none z-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)]"
+            >
+            </div>
+
+            <!-- Content Container (Elevated z-10 for perfect contrast) -->
+            <div class="relative z-10">
+                <!-- ping -->
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="relative flex h-2 w-2">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-(--accent) opacity-75"
+                        ></span>
+                        <span
+                            class="relative inline-flex rounded-full h-2 w-2 bg-(--accent)"
+                        ></span>
+                    </span>
+                    <span
+                        class="font-mono text-xs text-(--lightgray) tracking-wider uppercase"
+                    >
+                        Disponible para trabajar • 2026</span
+                    >
+                </div>
+                <!-- texto hero -->
+                <h1 class="mb-8 max-w-xl font-display text-[2.5rem] md:text-5xl lg:text-8xl ">
+                        Ui Designer en Xalapa
+                </h1>
+
+                <p
+                    class="text-lg md:text-xl text-(--lightgray) max-w-xl leading-relaxed mb-12 text-balance"
+                >
+                    Hola, soy Emi. Especialista experta en diseño y
+                    desarollo web. Transformo ideas complejas en interfaces
+                    limpias y funcionales.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <Button
+                        variante="acento"
+                        etiqueta="Conoce mis proyectos"
+                        href="/proyectos"
+                        className="hover:-translate-y-0.5"
+                        conIcono
+                    >
+                        <ChevronRight
+                            slot="icon"
+                            width="16px"
+                            height="16px"
+                            className=""
+                        />
+                    </Button>
+                </div>
             </div>
         </div>
+        <!-- div gradiente -->
+        <div
+            class="relative overflow-hidden bg-linear-to-b from-[#141414] to-[#0A0A0A] border border-white/10 rounded-3xl col-auto h-30 w-full md:h-full px-8 md:px-16"
+        >
+            <div
+                class="absolute -top-28 left-1/2 -translate-x-1/2 w-96 h-96 bg-(--c-gray-600)/15 rounded-full blur-3xl pointer-events-none"
+            >
+            </div>
+            <div
+                class="absolute -top-28 left-1/2 -translate-x-1/2 w-70 h-70 bg-(--c-gray-600)/30 rounded-full blur-2xl pointer-events-none"
+            >
+            </div>
+        </div>
+        <!-- foto centro -->
+        <Image
+            class="imgFoto"
+            src={emiimg}
+            alt="Emii Rosgz"
+            loading="eager"
+            fetchpriority="high"
+            quality={85}
+        />
     </div>
-    <!-- onClick={() => navigate('all-projects')} en boton -->
 </section>

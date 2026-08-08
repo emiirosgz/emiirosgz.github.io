@@ -1,21 +1,25 @@
 ---
 import Etiqueta from "@/components/ui/Tags.astro";
+import { Image } from "astro:assets";
+import fallbackImg from "@/assets/fallback-emiirosgz.webp";
+import { resolveImage, basePath } from "@/lib/utils";
+
 interface Props {
     href?: string;
-    imgSrc: string;
-    titulo: string;
-    descripcion: string;
+    imgSrc?: any;
+    titulo?: string;
+    descripcion?: string;
     tags?: string[];
     alt?: string;
     variante?: "simple" | "card";
 }
 const {
     href = "#",
-    imgSrc = "https://placehold.co/800x600/141414/A1A1AA?text=800x600",
-    titulo,
-    descripcion,
+    imgSrc = fallbackImg,
+    titulo = "",
+    descripcion = "",
     tags,
-    alt,
+    alt = titulo || "Imagen del proyecto",
     variante = "simple",
 } = Astro.props;
 
@@ -23,7 +27,7 @@ const isCard = variante === "card";
 const tagVariant = isCard ? "dos" : "uno";
 const titleClass = isCard
     ? "font-display text-xl font-medium mb-2 group-hover:text-(--accent) transition-colors"
-    : "font-display text-xl md:text-2xl font-medium mb-2 group-hover:text-(--accent)  transition-colors";
+    : "font-display text-xl md:text-2xl font-medium mb-2 group-hover:text-(--accent) transition-colors";
 const descriptionClass = isCard
     ? "text-(--lightgray) text-sm line-clamp-2 mb-6"
     : "text-textMuted mb-4";
@@ -37,15 +41,22 @@ const wrapperClass = isCard
     ? "group cursor-pointer flex flex-col h-full bg-(--deepgray) border border-white/5 hover:border-(--accent)/50 transition-colors"
     : "group lg:col-span-6 block mt-12 lg:mt-0";
 
+const finalImg = resolveImage(imgSrc) || fallbackImg;
+const finalHref = href && href !== '#' ? basePath(href) : href;
 ---
 
 {isCard ? (
-    <a href={href} class={wrapperClass}>
+    <a href={finalHref} class={wrapperClass}>
         <div class={imageWrapperClass}>
-            <img
-                src={imgSrc || "https://placehold.co/800x600/141414/A1A1AA?text=Content+Proyect"}
-                alt={alt || "Content Proyect"}
+            <Image
+                src={finalImg}
+                alt={alt || titulo || "Imagen del proyecto"}
                 class={imageClass}
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={600}
+                quality={80}
             />
         </div>
         <div class="p-6 grow flex flex-col justify-between">
@@ -66,12 +77,17 @@ const wrapperClass = isCard
         </div>
     </a>
 ) : (
-    <a href={href} class={wrapperClass}>
+    <a href={finalHref} class={wrapperClass}>
         <div class={imageWrapperClass}>
-            <img
-                src={imgSrc || "https://placehold.co/800x600/141414/A1A1AA?text=Content+Proyect"}
-                alt={alt || "Content Proyect"}
+            <Image
+                src={finalImg}
+                alt={alt || titulo || "Imagen del proyecto"}
                 class={imageClass}
+                loading="lazy"
+                decoding="async"
+                width={800}
+                height={600}
+                quality={80}
             />
         </div>
         <div>

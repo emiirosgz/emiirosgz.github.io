@@ -1,0 +1,378 @@
+---
+// Componente de Formulario de Contacto interactivo
+---
+
+<form id="contacto-form" class="bg-[#141414]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+    <div>
+        <h3 class="font-display text-2xl text-white font-medium mb-2">Envía un mensaje</h3>
+        <p class="text-xs md:text-sm text-[#A1A1AA] font-light">Completa la información requerida y te redirigiremos a WhatsApp para enviar los detalles de tu consulta de forma inmediata.</p>
+    </div>
+
+    <!-- Nombre Completo -->
+    <div>
+        <label for="nombre" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+            Nombre completo <span class="text-(--accent)">*</span>
+        </label>
+        <input 
+            type="text" 
+            id="nombre" 
+            name="nombre" 
+            required 
+            placeholder="Ej. Ana García"
+            class="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm placeholder:text-neutral-600"
+        />
+    </div>
+
+    <!-- Grid para Correo y Teléfono -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+            <label for="correo" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+                Correo electrónico <span class="text-(--accent)">*</span>
+            </label>
+            <input 
+                type="email" 
+                id="correo" 
+                name="correo" 
+                required 
+                placeholder="ejemplo@correo.com"
+                class="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm placeholder:text-neutral-600"
+            />
+        </div>
+        <div>
+            <label for="telefono" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+                Teléfono / WhatsApp <span class="text-(--accent)">*</span>
+            </label>
+            <input 
+                type="tel" 
+                id="telefono" 
+                name="telefono" 
+                required 
+                placeholder="Ej. 299 400 9972"
+                maxlength="15"
+                class="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm placeholder:text-neutral-600"
+            />
+            <p id="telefono-error" class="hidden text-xs text-red-400 mt-1.5 font-mono">
+                El teléfono debe tener exactamente 10 dígitos numéricos.
+            </p>
+        </div>
+    </div>
+
+    <!-- Nombre del Negocio / Proyecto -->
+    <div>
+        <label for="proyecto" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+            Nombre del Negocio / Proyecto <span class="text-neutral-500 text-[10px]">(Opcional)</span>
+        </label>
+        <input 
+            type="text" 
+            id="proyecto" 
+            name="proyecto" 
+            placeholder="Ej. Mi Marca / Empresa"
+            class="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm placeholder:text-neutral-600"
+        />
+    </div>
+
+    <!-- Grid para Servicio y Paquete (Dropdowns dinámicos) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+            <label for="servicio" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+                Servicio de interés
+            </label>
+            <select 
+                id="servicio" 
+                name="servicio"
+                class="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm cursor-pointer"
+            >
+                <option value="">Selecciona un servicio</option>
+                <option value="diseno-experiencia">Diseño & Experiencia</option>
+                <option value="consultoria-seo">Consultoría SEO & Local</option>
+                <option value="desarrollo-web">Desarrollo Web</option>
+                <option value="alojamiento-web">Alojamiento Web</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>
+        <div>
+            <label for="paquete" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+                Paquete / Opción <span class="text-neutral-500 text-[10px]">(Opcional)</span>
+            </label>
+            <select 
+                id="paquete" 
+                name="paquete"
+                disabled
+                class="w-full bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <option value="">Selecciona primero un servicio</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Detalles / Mensaje con validación de mínimo de caracteres -->
+    <div>
+        <label for="mensaje" class="block font-mono text-xs text-neutral-300 uppercase tracking-wider mb-2">
+            Detalles / Mensaje <span class="text-neutral-500 text-[10px]">(Mínimo 10 caracteres)</span>
+        </label>
+        <textarea 
+            id="mensaje" 
+            name="mensaje" 
+            rows="4" 
+            minlength="10"
+            placeholder="Cuéntame más sobre los objetivos, tiempos o requerimientos específicos de tu proyecto..."
+            class="w-full min-h-40 bg-[#0A0A0A] border border-white/10 text-white rounded-xl px-4 py-3.5 focus:outline-none focus:border-(--accent) focus:ring-1 focus:ring-(--accent) transition-all duration-200 text-sm placeholder:text-neutral-600 resize-y"
+        ></textarea>
+        <p id="mensaje-error" class="hidden text-xs text-red-400 mt-1.5 font-mono">
+            El mensaje debe tener al menos 10 caracteres.
+        </p>
+    </div>
+
+    <!-- Botón de Envío -->
+    <button 
+        type="submit" 
+        class="w-full bg-(--accent) hover:bg-(--accent)/90 text-black font-medium py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer shadow-lg shadow-(--accent)/10 hover:shadow-(--accent)/25 group text-base"
+    >
+        <span>Enviar a WhatsApp</span>
+        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.244.39-1.152 4.208 4.298-1.127.353.21zm9.733-6.849c-.244-.122-1.446-.713-1.67-795-.224-.081-.387-.122-.55.122-.163.244-.632.795-.774.958-.143.163-.285.183-.529.061-.244-.122-1.033-.381-1.968-1.214-.727-.648-1.218-1.448-1.361-1.692-.143-.244-.015-.376.107-.497.11-.11.244-.285.366-.427.122-.143.163-.244.244-.407.082-.163.041-.305-.02-.427-.061-.122-.55-1.323-.753-1.81-.198-.475-.399-.411-.55-.418l-.468-.008c-.163 0-.427.061-.65.305-.224.244-.855.835-.855 2.036 0 1.201.875 2.36 .997 2.523.122.163 1.722 2.63 4.172 3.689.583.252 1.038.403 1.393.516.586.186 1.12.16 1.541.097.47-.071 1.446-.591 1.65-1.161.204-.57.204-1.059.143-1.161-.061-.102-.224-.163-.468-.285z"/>
+        </svg>
+    </button>
+</form>
+
+<script>
+    function initFormularioContacto() {
+        // Mapa de paquetes y opciones dinámicas por servicio
+        const PAQUETES_POR_SERVICIO: Record<string, string[]> = {
+            'diseno-experiencia': [
+                'Redes Sociales - Básico',
+                'Redes Sociales - Estándar',
+                'Redes Sociales - Pro',
+                'Maquetado & Prototipado UI/UX',
+                'Proyecto de Diseño Personalizado'
+            ],
+            'consultoria-seo': [
+                'Auditoría SEO Inicial',
+                'Plan Crecimiento Orgánico',
+                'Estrategia SEO Personalizada'
+            ],
+            'desarrollo-web': [
+                'Desarrollo a Medida (Astro Stack)',
+                'Desarrollo en WordPress',
+                'Tienda en Línea (E-commerce)',
+                'Mantenimiento & Soporte',
+                'Desarrollo Web Personalizado'
+            ],
+            'alojamiento-web': [
+                'Hosting & Dominio Anual',
+                'Migración de Servidor',
+                'Mantenimiento & Soporte Técnico'
+            ],
+            'otro': [
+                'Consulta General / Proyecto Personalizado'
+            ]
+        };
+
+        const servicioSelect = document.getElementById('servicio') as HTMLSelectElement | null;
+        const paqueteSelect = document.getElementById('paquete') as HTMLSelectElement | null;
+        const telefonoInput = document.getElementById('telefono') as HTMLInputElement | null;
+        const telefonoError = document.getElementById('telefono-error');
+        const mensajeInput = document.getElementById('mensaje') as HTMLTextAreaElement | null;
+        const mensajeError = document.getElementById('mensaje-error');
+
+        if (!servicioSelect || !paqueteSelect) return;
+
+        // Limpiar errores visuales al escribir
+        if (telefonoInput) {
+            telefonoInput.addEventListener('input', () => {
+                telefonoInput.setCustomValidity('');
+                telefonoError?.classList.add('hidden');
+            });
+        }
+
+        if (mensajeInput) {
+            mensajeInput.addEventListener('input', () => {
+                mensajeInput.setCustomValidity('');
+                mensajeError?.classList.add('hidden');
+            });
+        }
+
+        // Función para actualizar dinámicamente el combo de paquetes
+        function actualizarPaquetes(servicioValue: string, paquetePreseleccionado: string | null = null) {
+            if (!paqueteSelect) return;
+
+            paqueteSelect.innerHTML = '';
+            const opciones = PAQUETES_POR_SERVICIO[servicioValue];
+
+            if (!opciones || opciones.length === 0) {
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.textContent = 'Selecciona primero un servicio';
+                paqueteSelect.appendChild(defaultOpt);
+                paqueteSelect.disabled = true;
+                return;
+            }
+
+            paqueteSelect.disabled = false;
+
+            const placeholderOpt = document.createElement('option');
+            placeholderOpt.value = '';
+            placeholderOpt.textContent = 'Selecciona un paquete u opción';
+            paqueteSelect.appendChild(placeholderOpt);
+
+            let coincidenciaEncontrada = false;
+
+            opciones.forEach((item) => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+
+                if (paquetePreseleccionado) {
+                    const pLower = paquetePreseleccionado.toLowerCase();
+                    const iLower = item.toLowerCase();
+                    if (iLower === pLower || iLower.includes(pLower) || pLower.includes(iLower)) {
+                        opt.selected = true;
+                        coincidenciaEncontrada = true;
+                    }
+                }
+                paqueteSelect.appendChild(opt);
+            });
+
+            if (paquetePreseleccionado && !coincidenciaEncontrada) {
+                const customOpt = document.createElement('option');
+                customOpt.value = paquetePreseleccionado;
+                customOpt.textContent = paquetePreseleccionado;
+                customOpt.selected = true;
+                paqueteSelect.appendChild(customOpt);
+            }
+        }
+
+        servicioSelect.addEventListener('change', () => {
+            actualizarPaquetes(servicioSelect.value);
+        });
+
+        // 1. Lectura e Inyección de Parámetros URL (servicio y paquete)
+        const urlParams = new URLSearchParams(window.location.search);
+        const servicioParam = urlParams.get('servicio');
+        const paqueteParam = urlParams.get('paquete');
+
+        if (servicioParam) {
+            const searchVal = servicioParam.toLowerCase();
+            for (let i = 0; i < servicioSelect.options.length; i++) {
+                const opt = servicioSelect.options[i];
+                if (opt.value.toLowerCase() === searchVal || opt.text.toLowerCase().includes(searchVal)) {
+                    opt.selected = true;
+                    break;
+                }
+            }
+        }
+
+        if (servicioSelect.value) {
+            actualizarPaquetes(servicioSelect.value, paqueteParam);
+        }
+
+        const form = document.getElementById('contacto-form') as HTMLFormElement | null;
+        if (!form) return;
+
+        // Evitar registrar event listeners duplicados por astro:page-load
+        if (form.dataset.initialized === 'true') return;
+        form.dataset.initialized = 'true';
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Validación 1: Teléfono exacto a 10 dígitos numéricos
+                const telefonoRaw = telefonoInput ? telefonoInput.value.trim() : '';
+                const digitosTelefono = telefonoRaw.replace(/\D/g, '');
+
+                if (digitosTelefono.length !== 10) {
+                    if (telefonoInput) {
+                        telefonoInput.setCustomValidity('El teléfono debe tener exactamente 10 dígitos numéricos.');
+                        telefonoInput.reportValidity();
+                    }
+                    telefonoError?.classList.remove('hidden');
+                    return;
+                } else {
+                    if (telefonoInput) telefonoInput.setCustomValidity('');
+                    telefonoError?.classList.add('hidden');
+                }
+
+                // Validación 2: Mensaje con mínimo 10 caracteres
+                const mensajeVal = mensajeInput ? mensajeInput.value.trim() : '';
+                if (mensajeVal.length > 0 && mensajeVal.length < 10) {
+                    if (mensajeInput) {
+                        mensajeInput.setCustomValidity('El mensaje debe contener al menos 10 caracteres.');
+                        mensajeInput.reportValidity();
+                    }
+                    mensajeError?.classList.remove('hidden');
+                    return;
+                } else {
+                    if (mensajeInput) mensajeInput.setCustomValidity('');
+                    mensajeError?.classList.add('hidden');
+                }
+
+                const nombre = (document.getElementById('nombre') as HTMLInputElement).value.trim();
+                const correo = (document.getElementById('correo') as HTMLInputElement).value.trim();
+                const proyecto = (document.getElementById('proyecto') as HTMLInputElement).value.trim() || 'No especificado';
+                
+                const servicioText = servicioSelect.selectedIndex >= 0 
+                    ? servicioSelect.options[servicioSelect.selectedIndex].text 
+                    : 'No especificado';
+                
+                const paqueteText = paqueteSelect && paqueteSelect.selectedIndex >= 0 && paqueteSelect.value !== ''
+                    ? paqueteSelect.options[paqueteSelect.selectedIndex].text 
+                    : 'No especificado';
+
+                const mensajeFinal = mensajeVal || 'Sin detalles adicionales';
+
+                const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+                const originalBtnContent = submitBtn ? submitBtn.innerHTML : '';
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<span>Enviando mensaje...</span>`;
+                }
+
+                // Enviar correo a Resend (únicamente a emiirosgz@gmail.com)
+                try {
+                    await fetch('/api/contacto', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            nombre,
+                            correo,
+                            telefono: digitosTelefono,
+                            proyecto,
+                            servicio: servicioText,
+                            paquete: paqueteText,
+                            mensaje: mensajeFinal
+                        })
+                    });
+                } catch (err) {
+                    console.error('Error enviando copia por correo:', err);
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnContent;
+                    }
+                }
+
+                const textoMensaje = `Hola Emi, vengo de tu portafolio personal y quiero solicitar información / cotización:
+
+* *Nombre:* ${nombre}
+* *Correo:* ${correo}
+* *Teléfono:* ${digitosTelefono}
+* *Proyecto:* ${proyecto}
+* *Servicio:* ${servicioText}
+* *Paquete/Opción:* ${paqueteText}
+* *Detalles:* ${mensajeFinal}`;
+
+                const whatsappUrl = `https://wa.me/522294009972?text=${encodeURIComponent(textoMensaje)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFormularioContacto);
+    } else {
+        initFormularioContacto();
+    }
+    document.addEventListener('astro:page-load', initFormularioContacto);
+</script>

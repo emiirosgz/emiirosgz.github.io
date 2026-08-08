@@ -1,15 +1,15 @@
 ---
 interface Props {
     titulo: string;
-    numero?: string;
     en?:string;
+    className?:string;
 }
-const { titulo, numero, en} = Astro.props;
+const { titulo, en, className} = Astro.props;
 ---
 
-<div class="flex justify-between items-end mb-16 border-b border-white/10 pb-8">
+<div class=`${className} flex justify-between items-end mb-16 border-b border-white/10 pb-8`>
     <h2 class="font-display text-3xl md:text-4xl font-medium">{titulo}</h2>
     <span class="text-textMuted font-mono text-sm hidden md:block"
-        >{numero || '00'} // {en}</span
+        >// {en}</span
     >
 </div>

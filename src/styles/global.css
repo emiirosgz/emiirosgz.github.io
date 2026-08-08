@@ -1,5 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap');
 @import 'tailwindcss';
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../assets/fonts/inter/InterVariable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Space Grotesk';
+    src: url('../assets/fonts/space-grotesk/SpaceGrotesk-VariableFont_wght.woff2') format('woff2');
+    font-weight: 300 700;
+    font-style: normal;
+    font-display: swap;
+}
 
 :root{
     /* fonts */
@@ -62,6 +77,10 @@
  ::-webkit-scrollbar-thumb:hover {
      background: #3F3F46;
  }
+
+ .no-scrollbar::-webkit-scrollbar {
+     display: none;
+ }
  
  html {
      scroll-behavior: smooth;
@@ -105,14 +124,6 @@ h6,.h6{
      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
  }
 
- /* .noise-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none;
-    z-index: 50;
-    opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-} */
 
  .fade-in-up {
      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -158,3 +169,166 @@ h6,.h6{
     background-clip: text;
     color: transparent;
  }
+
+ /* ====================================================== */
+/* ===== ANIMACIONES GLASSMORPHISM DE FONDO (HERO) ====== */
+/* ====================================================== */
+  .imgFoto{
+        position:absolute;
+        bottom:00px;
+        right: calc(50% - 50px);
+        /* z-index:-10; */
+        /* border-radius:50%;
+        border: 1px solid var(--accent); */
+        width:130px;
+        height:auto;
+        object-fit:cover;
+        /* background-color:var(--black); */
+    }
+@media only screen and (width >= 426px){
+    .imgFoto{
+        bottom:0;
+        right: calc(10% - 50px);
+        border-radius:0%;
+        border: none;
+        width:220px;
+        height:auto;
+        background-color:transparent;
+     }
+}
+@media only screen and (width >= 1024px){
+    .imgFoto{
+        bottom:0;
+        right:  calc(50% - 480px) !important;
+        width:25%;
+     }
+}
+
+/* Estilo Neón Luminoso para el texto principal */
+.neon-text {
+    background: linear-gradient(135deg, #ffffff 0%, var(--c-green-200) 25%, var(--c-green-300) 50%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1px #669e12;
+    
+}
+
+/* ====================================================== */
+/* ===== ANIMACIONES GLASSMORPHISM DE FONDO (HERO) ====== */
+/* ====================================================== */
+
+.glass-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.65;
+    will-change: transform, opacity;
+}
+
+.glass-blob-1 {
+    top: -20%;
+    right: -10%;
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, var(--accent) 0%, var(--c-green-600) 60%, transparent 100%);
+    animation: floatBlob1 11s ease-in-out infinite alternate;
+}
+
+.glass-blob-2 {
+    bottom: -25%;
+    left: -10%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, var(--c-green-300) 0%, var(--c-green-500) 50%, transparent 100%);
+    animation: floatBlob2 13s ease-in-out infinite alternate;
+}
+
+.glass-blob-3 {
+    top: 25%;
+    left: 20%;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, var(--c-green-400) 0%, var(--c-green-800) 70%, transparent 100%);
+    animation: floatBlob3 9s ease-in-out infinite alternate;
+}
+
+.glass-mesh {
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at 50% 50%, rgba(190, 237, 105, 0.08) 0%, rgba(133, 198, 28, 0.04) 40%, transparent 70%);
+    animation: rotateMesh 18s linear infinite;
+    will-change: transform;
+}
+
+.glass-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%);
+}
+
+@keyframes floatBlob1 {
+    0% {
+        transform: translate(0px, 0px) scale(1) rotate(0deg);
+        opacity: 0.55;
+    }
+    33% {
+        transform: translate(-70px, 60px) scale(1.15) rotate(120deg);
+        opacity: 0.75;
+    }
+    66% {
+        transform: translate(50px, -50px) scale(0.9) rotate(240deg);
+        opacity: 0.45;
+    }
+    100% {
+        transform: translate(-30px, 40px) scale(1.05) rotate(360deg);
+        opacity: 0.65;
+    }
+}
+
+@keyframes floatBlob2 {
+    0% {
+        transform: translate(0px, 0px) scale(1) rotate(0deg);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(80px, -70px) scale(1.2) rotate(-180deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50px, 40px) scale(0.85) rotate(-360deg);
+        opacity: 0.5;
+    }
+}
+
+@keyframes floatBlob3 {
+    0% {
+        transform: translate(0px, 0px) scale(0.9);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translate(-60px, -50px) scale(1.25);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(50px, 60px) scale(0.95);
+        opacity: 0.45;
+    }
+}
+
+@keyframes rotateMesh {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}

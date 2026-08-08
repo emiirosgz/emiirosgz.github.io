@@ -1,12 +1,29 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SobreMi from '@/components/sections/Sobremi.astro' 
+import SobreMi from '@/components/sections/Sobremi.astro';
 import Experiencia from '@/components/sections/Experiencia.astro';
 import Section from '@/components/ui/Section.astro';
+
+import StackTecnologico from '@/components/acercade/StackTecnologico.astro';
+import ResumenServicios from '@/components/acercade/ResumenServicios.astro';
+import TecnologiaSitio from '@/components/acercade/TecnologiaSitio.astro';
+import DemostracionFuentes from '@/components/acercade/DemostracionFuentes.astro';
+import BentoColoresDegradados from '@/components/acercade/BentoColoresDegradados.astro';
+import SeccionDesplegable from '@/components/acercade/SeccionDesplegable.astro';
 ---
-<Layout title="" description="">
+
+<Layout title="Acerca de mí | Emireth Rosas" description="Conoce más sobre mi trayectoria, el stack tecnológico que utilizo, los servicios que domino, el sistema de diseño y la tecnología detrás de este portafolio web.">
     <Section>
-        <SobreMi/>
-        <Experiencia/>
+        <SobreMi />
+        <Experiencia />
+        <StackTecnologico />
+        <ResumenServicios />
+        <TecnologiaSitio />
+        
+        <!-- Divisor con efecto Leer Más para el Sistema de Diseño (Tipografía & Colores) -->
+        <SeccionDesplegable tituloBoton="Leer más: Sistema de Diseño (Tipografía & Colores)">
+            <DemostracionFuentes />
+            <BentoColoresDegradados />
+        </SeccionDesplegable>
     </Section>
 </Layout>

@@ -11,11 +11,13 @@ export type CategoriasProyectos = {
     desc:string;
 }
 
+import type { ImageMetadata } from "astro";
+
 export type Capabilities = {
     id:string;
     icon: React.ElementType;
     titulo: string;
-    img?: string;
+    img?: string | ImageMetadata | any;
     descripcion: string;
     long_desc:string;
     lista: string[];

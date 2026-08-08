@@ -1,0 +1,19 @@
+---
+import Section from "@/components/ui/Section.astro";
+import Layout from "@/layouts/Layout.astro";
+import { SITE_TITLE, FlujosTrabajo } from "@/lib/consts";
+import WorkflowFilter from "@/components/react/WorkflowFilter";
+import CtaReunion from "@/components/sections/CtaReunion.astro";
+---
+
+<Layout
+    title={`Proceso | ${SITE_TITLE}`}
+    description="Conoce cómo trabajamos cada proyecto desde la reunión inicial hasta la entrega final."
+>
+    <Section>
+        <div class="max-w-3xl mx-auto">
+            <WorkflowFilter client:load flujosTrabajo={FlujosTrabajo} />
+        </div>
+    </Section>
+    <CtaReunion />
+</Layout>

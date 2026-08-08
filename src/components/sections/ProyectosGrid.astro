@@ -17,7 +17,7 @@ const gridColumnClass =
 const normalizeProject = (project: any) => {
     const entry = project?.data ? project : { data: project };
     const image = entry.data?.imagen ?? entry.img;
-    const imgSrc = typeof image === "string" ? image : image?.src;
+    const imgSrc = image;
     const category = CATEGORIAS.find((cat) => cat.id === entry.data?.categoria);
     const categoryHref = category?.href ?? entry.data?.categoria?.toLowerCase().replace(/\s+/g, "-");
     const slug = entry.id ?? entry.data?.slug ?? entry.data?.titulo?.toLowerCase().replace(/\s+/g, "-");

@@ -2,20 +2,181 @@
 import Layout from "./Layout.astro";
 import Section from "@/components/ui/Section.astro";
 import BackTo from "@/components/ui/BackToHome.astro";
-import {CheckCircle, Globe, Layers, Code} from '@/assets/icons'
+import CardRelacionado from "@/components/ui/CardRelacionado.astro";
+import Button from "@/components/ui/Button.astro";
+import { CheckCircle, Globe, Layers, Code,Database, ChevronRight } from '@/assets/icons';
+import * as BrandIcons from '@/assets/icons/brands';
+import { getCollection } from "astro:content";
+import { getCategoryHref, resolveImage, basePath } from "@/lib/utils";
+import { SERVICIOS_PRECIOS } from "@/lib/precios";
+import CTA from '@/components/sections/CTA.astro';
+import { Image } from "astro:assets";
+
+const BRAND_NAME_ALIASES: Record<string, string> = {
+    'vs code': 'VSC',
+    'vscode': 'VSC',
+    'vsc': 'VSC',
+    'visual studio code': 'VSC',
+    'astro': 'Astro',
+    'tailwind': 'Tailwind',
+    'tailwind css': 'Tailwind',
+    'tailwindcss': 'Tailwind',
+    'react': 'React',
+    'reactjs': 'React',
+    'react.js': 'React',
+    'angular': 'Angular',
+    'angularjs': 'Angular',
+    'github': 'GitHub',
+    'git & github': 'GitHub',
+    'git/github': 'GitHub',
+    'git': 'GitHub',
+    'javascript': 'JavaScript',
+    'js': 'JavaScript',
+    'search console': 'SearchConsole',
+    'searchconsole': 'SearchConsole',
+    'google analytics': 'GoogleAnalytics',
+    'googleanalytics': 'GoogleAnalytics',
+    'googleanalitycs': 'GoogleAnalitycs',
+    'adobe suite': 'Adobe',
+    'adobe': 'Adobe',
+    'davinci resolve': 'Davinci',
+    'davinci': 'Davinci',
+    'powerpoint': 'PowerPoint',
+};
+
+function getBrandIcon(techName: string) {
+    if (!techName) return null;
+    const key = techName.trim().toLowerCase();
+    const componentName = BRAND_NAME_ALIASES[key] || techName.trim();
+    
+    // 1. Direct match in BrandIcons
+    if ((BrandIcons as any)[componentName]) {
+        return (BrandIcons as any)[componentName];
+    }
+    
+    // 2. Normalize key by stripping non-alphanumeric chars
+    const normalizedKey = key.replace(/[^a-z0-9]/g, '');
+    
+    // 3. Find matching icon key in BrandIcons ignoring case & spaces
+    const foundKey = Object.keys(BrandIcons).find((k) => {
+        const normalizedK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return k.toLowerCase() === key || normalizedK === normalizedKey;
+    });
+    
+    return foundKey ? (BrandIcons as any)[foundKey] : null;
+}
 
 const { frontmatter } = Astro.props;
-const wh = "20px"
-const wt = "24px"
+const wh = "20px";
+const wt = "24px";
 
-if (frontmatter.titulo.includes("Diseño") || frontmatter.titulo.includes("Experiencia")){
+const tituloLower = (frontmatter.titulo || "").toLowerCase();
+const titlePageLower = (frontmatter.titlePage || "").toLowerCase();
+
+if (tituloLower.includes("diseño") || tituloLower.includes("experiencia")){
     frontmatter.icon = Layers;
-} else if (frontmatter.titulo.includes("Estrategia") || frontmatter.titulo.includes("Contenido")) {
+} else if (tituloLower.includes("seo") || tituloLower.includes("estrategia") || tituloLower.includes("contenido") || tituloLower.includes("consultoría")) {
     frontmatter.icon = Globe;
-} else if (frontmatter.titulo.includes("Code") || frontmatter.titulo.includes("Build")) {
+} else if (tituloLower.includes("code") || tituloLower.includes("build") || tituloLower.includes("desarrollo")) {
     frontmatter.icon = Code;
+} else if (tituloLower.includes("alojamiento") || tituloLower.includes("web")) {
+    frontmatter.icon = Database;
 } else {
     frontmatter.icon = Code;
+}
+
+// 1. Detección automática del slug del servicio mediante Astro.url.pathname
+const pathname = Astro.url.pathname;
+const urlSegments = pathname.split('/').filter(Boolean);
+const rawSlug = urlSegments[urlSegments.length - 1] || "";
+
+let servicioSlug = rawSlug;
+if (!SERVICIOS_PRECIOS[servicioSlug]) {
+    if (tituloLower.includes("diseño") || tituloLower.includes("experiencia")) {
+        servicioSlug = 'diseno-experiencia';
+    } else if (tituloLower.includes("seo") || tituloLower.includes("consultoría")) {
+        servicioSlug = 'consultoria-seo';
+    } else if (tituloLower.includes("code") || tituloLower.includes("build") || tituloLower.includes("desarrollo")) {
+        servicioSlug = 'desarrollo-web';
+    }
+}
+
+const datosPrecio = SERVICIOS_PRECIOS[servicioSlug];
+
+// Formateo de precios numéricos en MXN
+function formatPrecio(precio: number | string) {
+    if (typeof precio === 'number') {
+        return new Intl.NumberFormat('es-MX', {
+            style: 'currency',
+            currency: 'MXN',
+            maximumFractionDigits: 0
+        }).format(precio);
+    }
+    return precio;
+}
+
+// Lógica de Proyectos Relacionados
+const isSEO = tituloLower.includes("seo") || titlePageLower.includes("seo");
+const isDiseno = tituloLower.includes("diseño") || tituloLower.includes("experiencia") || titlePageLower.includes("diseño");
+const isWeb = tituloLower.includes("code") || tituloLower.includes("build") || tituloLower.includes("desarrollo") || titlePageLower.includes("desarrollo");
+
+const allProjects = await getCollection("proyectos");
+
+let proyectosRelacionados: {
+    href: string;
+    imgSrc: any;
+    titulo: string;
+    categoria: string;
+}[] = [];
+
+if (!isSEO) {
+    let filtered: typeof allProjects = [];
+    if (isDiseno) {
+        filtered = allProjects.filter((p) => {
+            const r = (p.data.rol || "").toLowerCase();
+            const t = (p.data.tags || []).join(" ").toLowerCase();
+            return (
+                r.includes("diseño") ||
+                r.includes("ui/ux") ||
+                r.includes("social media") ||
+                r.includes("branding") ||
+                r.includes("redes") ||
+                r.includes("fotografía") ||
+                r.includes("ilustración") ||
+                t.includes("diseño") ||
+                t.includes("redes")
+            );
+        });
+    } else if (isWeb) {
+        filtered = allProjects.filter((p) => {
+            const r = (p.data.rol || "").toLowerCase();
+            const t = (p.data.tags || []).join(" ").toLowerCase();
+            const st = Array.isArray(p.data.stack_tools) 
+                ? p.data.stack_tools.join(" ").toLowerCase()
+                : (p.data.stack_tools || "").toLowerCase();
+            const c = (p.data.categoria || "").toLowerCase();
+            return (
+                r.includes("frontend") ||
+                r.includes("desarrollo") ||
+                r.includes("web") ||
+                c.includes("web app") ||
+                t.includes("react") ||
+                t.includes("tailwind") ||
+                st.includes("react") ||
+                st.includes("astro")
+            );
+        });
+    }
+    
+    proyectosRelacionados = filtered.slice(0, 3).map((project) => {
+        const image = project.data.imagen ?? "https://placehold.co/320x320/141414/EDEDED?text=Proyecto";
+        return {
+            href: `/proyectos/${getCategoryHref(project.data.categoria)}/${project.id}`,
+            imgSrc: image,
+            titulo: project.data.titulo,
+            categoria: project.data.categoria,
+        };
+    });
 }
 ---
 
@@ -39,6 +200,7 @@ if (frontmatter.titulo.includes("Diseño") || frontmatter.titulo.includes("Exper
                 </h1>
             </div>
         </div>
+        
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
             <div class="lg:col-span-7 slide-up-fade">
                 <h2 class="font-display text-2xl mb-6 text-(--accent)">
@@ -62,8 +224,17 @@ if (frontmatter.titulo.includes("Diseño") || frontmatter.titulo.includes("Exper
                 </ul>
             </div>
             <div class="lg:col-span-5 slide-up-fade delay-200">
-                <div class="w-full aspect-2/3 bg-[#141414] border border-white/5 overflow-hidden sticky top-32  rounded-xl">
-                    <img src={frontmatter.img} alt={frontmatter.titulo}class="w-full h-full object-cover"/>    
+                <div class="w-full aspect-2/3 bg-[#141414] border border-white/5 overflow-hidden sticky top-32 rounded-xl">
+                    <Image 
+                        src={resolveImage(frontmatter.img)} 
+                        alt={frontmatter.titulo || "Imagen del servicio"} 
+                        loading="lazy"
+                        decoding="async"
+                        width={800}
+                        height={1200}
+                        quality={85}
+                        class="w-full h-full object-cover"
+                    />    
                     <div class="absolute inset-0 bg-linear-to-t from-[#0C0C0C] from-10% via-[#0C0C0C]/20 via-30% to-transparent" >
                     </div>
                     <div class="absolute inset-0 flex flex-col justify-end p-8">
@@ -80,6 +251,206 @@ if (frontmatter.titulo.includes("Diseño") || frontmatter.titulo.includes("Exper
                     </div>
                 </div>
             </div>
-        </div>   
+        </div>
+
+        <!-- Render de Contenido Markdown Body si existe -->
+        <div class="max-w-7xl mx-auto px-6">
+            <slot />
+        </div>
+
+        <!-- Stack del Servicio -->
+        {frontmatter.stack && frontmatter.stack.length > 0 && (
+            <div class="max-w-7xl mx-auto px-6 mb-24">
+                <div class="mb-8 border-b border-white/10 pb-6">
+                    <span class="font-mono text-xs text-(--accent) uppercase tracking-widest block mb-2">// Tecnologías & Herramientas</span>
+                    <h2 class="font-display text-2xl md:text-3xl text-white font-medium">Stack Utilizado</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {frontmatter.stack.map((tech: string) => {
+                        const IconComponent = getBrandIcon(tech);
+                        return (
+                            <div class="group relative bg-[#141414] border border-white/10 hover:border-(--accent)/60 p-5 rounded-xl transition-all duration-300 flex flex-col items-center justify-center text-center gap-3 hover:-translate-y-1 hover:shadow-lg hover:shadow-(--accent)/5">
+                                <div class="h-8 flex items-center justify-center">
+                                    {IconComponent ? (
+                                        <IconComponent className="w-7 h-7 text-white group-hover:scale-110 transition-transform shrink-0" width="28" height="28" />
+                                    ) : (
+                                        <div class="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-(--accent) transition-colors"></div>
+                                    )}
+                                </div>
+                                <span class="font-mono text-sm font-medium text-neutral-300 group-hover:text-white transition-colors">{tech}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        )}
+
+        <!-- 2. Sección de Precios & Paquetes (Bento / Glassmorphism UI) -->
+        {datosPrecio && datosPrecio.paquetes && datosPrecio.paquetes.length > 0 && (
+            <div class="max-w-7xl mx-auto px-6 mb-24">
+                <div class="mb-12 border-b border-white/10 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <span class="font-mono text-xs text-(--accent) uppercase tracking-widest block mb-2">// Planes & Inversión</span>
+                        <h2 class="font-display text-3xl md:text-5xl text-white font-medium">{datosPrecio.titulo || "Planes & Paquetes"}</h2>
+                        {datosPrecio.subtitulo && (
+                            <p class="text-[#A1A1AA] text-base md:text-lg mt-2 font-light max-w-2xl">{datosPrecio.subtitulo}</p>
+                        )}
+                    </div>
+                    <span class="font-mono text-xs text-[#A1A1AA] bg-[#141414] px-3.5 py-1.5 border border-white/10 rounded-full self-start md:self-auto">
+                        Precios en MXN
+                    </span>
+                </div>
+
+                <div class={`grid grid-cols-1 md:grid-cols-2 ${datosPrecio.paquetes.length === 4 ? 'lg:grid-cols-2 xl:grid-cols-4' : 'lg:grid-cols-3'} gap-6 items-stretch`}>
+                    {datosPrecio.paquetes.map((pkg) => {
+                        const isPopular = pkg.popular;
+                        return (
+                            <div 
+                                class={`relative flex flex-col justify-between p-8 rounded-2xl transition-all duration-500 group ${
+                                    isPopular 
+                                        ? 'bg-linear-to-b from-[#1c1c1f]/90 to-[#141414]/90 backdrop-blur-xl border-2 border-(--accent) shadow-2xl shadow-(--accent)/10 scale-[1.02] z-10' 
+                                        : 'bg-[#141414]/70 backdrop-blur-md border border-white/10 hover:border-white/25 hover:bg-[#1a1a1a]/80 hover:-translate-y-1.5'
+                                }`}
+                            >
+                                {isPopular && (
+                                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-(--accent) text-black font-mono text-xs font-bold uppercase tracking-wider rounded-full shadow-lg shadow-(--accent)/20 flex items-center gap-2 whitespace-nowrap">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-black animate-ping"></span>
+                                        {pkg.destacadoLabel || "Más Popular"}
+                                    </div>
+                                )}
+
+                                <div>
+                                    <div class="mb-6">
+                                        <h3 class="font-display text-xl font-medium text-white mb-2 group-hover:text-(--accent) transition-colors">
+                                            {pkg.nombre}
+                                        </h3>
+                                        <p class="text-xs text-[#A1A1AA] font-light leading-relaxed min-h-9">
+                                            {pkg.descripcion}
+                                        </p>
+                                    </div>
+
+                                    <div class="mb-6 pb-6 border-b border-white/10">
+                                        <div class="flex items-baseline gap-2">
+                                            <span class="font-display text-3xl md:text-4xl font-bold text-white tracking-tight">
+                                                {formatPrecio(pkg.precio)}
+                                            </span>
+                                            <span class="font-mono text-xs text-[#A1A1AA] uppercase">
+                                                {pkg.moneda}
+                                            </span>
+                                        </div>
+                                        {pkg.periodo && (
+                                            <span class="inline-block text-xs font-mono text-(--accent) mt-1 font-medium">
+                                                / {pkg.periodo}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div class="mb-8">
+                                        <span class="font-mono text-xs text-neutral-400 uppercase tracking-wider block mb-4">
+                                            // Incluye:
+                                        </span>
+                                        <ul class="space-y-3">
+                                            {pkg.caracteristicas.map((feat) => (
+                                                <li class="flex items-start gap-3 text-xs md:text-sm text-neutral-200">
+                                                    <CheckCircle className="text-(--accent) shrink-0 mt-0.5" width="16" height="16" />
+                                                    <span class="leading-snug">{feat}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="pt-4 mt-auto">
+                                    <Button
+                                        etiqueta={pkg.ctaText || "Solicitar paquete"}
+                                        href={`/contacto?servicio=${servicioSlug}&paquete=${encodeURIComponent(pkg.nombre)}`}
+                                        variante={isPopular ? "acento" : "borde"}
+                                        className="w-full justify-center text-sm font-medium"
+                                        conIcono
+                                    >
+                                        <ChevronRight slot="icon" width="16" height="16" />
+                                    </Button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* <!-- Nota aclaratoria --> */}
+                <div class="mx-auto my-8 text-center text-xs text-(--lightgray)">
+                   <span class="text-(--accent)"> ─┤ </span>El <strong>precio puede variar</strong> según los requerimientos específicos y funcionalidades adicionales de cada proyecto. <span class="text-(--accent)"> ├─ </span>
+                </div>
+
+            </div>
+        )}
+
+        
+        <CTA
+            titulo="¿Cómo podemos trabajar juntos?"
+            desc="Antes de hablar de propuestas o presupuestos, te explico cómo se desarrolla cada proyecto, qué puedes esperar durante el proceso y cómo se realiza la entrega."
+            href="/proceso"
+            etiqueta="Ver proceso de trabajo"
+        />
+
+        <!-- Proyectos Relacionados (Omitido para SEO según especificación) -->
+        {proyectosRelacionados.length > 0 && (
+            <div class="max-w-7xl mx-auto px-6 mb-24">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/10 pb-6 gap-4">
+                    <div>
+                        <span class="font-mono text-xs text-(--accent) uppercase tracking-widest block mb-2">// Portafolio</span>
+                        <h2 class="font-display text-2xl md:text-4xl text-white font-medium">Proyectos Relacionados</h2>
+                    </div>
+                    <a href={basePath("/proyectos")} class="inline-flex items-center gap-2 text-sm font-mono text-[#A1A1AA] hover:text-(--accent) transition-colors">
+                        Ver todos los proyectos <ChevronRight width="16" height="16" />
+                    </a>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {proyectosRelacionados.map((item) => (
+                        <CardRelacionado
+                            href={item.href}
+                            imgSrc={item.imgSrc}
+                            titulo={item.titulo}
+                            categoria={item.categoria}
+                        />
+                    ))}
+                </div>
+            </div>
+        )}
+
+        <!-- Nuevo CTA con Accent Shine en Dark Mode -->
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="relative overflow-hidden bg-linear-to-b from-[#141414] to-[#0A0A0A] border border-white/10 hover:border-(--accent)/30 rounded-2xl p-8 md:p-16 my-16 text-center transition-all duration-500 group">
+                <!-- Accent Shine Glow Elements -->
+                <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-(--accent)/15 rounded-full blur-3xl pointer-events-none group-hover:bg-(--accent)/25 transition-all duration-700"></div>
+                <div class="absolute -bottom-32 -right-16 w-80 h-80 bg-(--accent)/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+                    <span class="px-4 py-1.5 text-xs font-mono tracking-widest text-(--accent) bg-(--accent)/10 border border-(--accent)/20 rounded-full uppercase mb-6 inline-block">
+                        Hablemos de tu proyecto
+                    </span>
+                    <h3 class="font-display text-3xl md:text-5xl font-medium text-white leading-tight mb-6">
+                        ¿Listo para llevar tu proyecto al siguiente nivel?
+                    </h3>
+                    <p class="text-base md:text-lg text-[#A1A1AA] font-light leading-relaxed mb-8">
+                        Diseño soluciones digitales enfocadas en resultados. Cuéntame sobre tus objetivos y empecemos a trabajar juntos.
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <Button
+                            etiqueta="Iniciar conversación"
+                            href={`/contacto?servicio=${servicioSlug}`}
+                            variante="acento"
+                            conIcono
+                        >
+                            <ChevronRight slot="icon" width="18" height="18" />
+                        </Button>
+                        <Button
+                            etiqueta="Ver todos los servicios"
+                            href="/servicios"
+                            variante="borde"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
     </Section>
 </Layout>

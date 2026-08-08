@@ -1,0 +1,14 @@
+---
+import InfoSeccion from '@/components/sections/TituloSeccion.astro';
+import BentoColoresReact from './BentoColoresDegradados';
+---
+
+<div id="colores-degradados" class="mb-28">
+    <InfoSeccion titulo="Colores & Degradados" en="Color Palette & Gradients"/>
+    
+    <p class="text-(--lightgray) text-lg max-w-3xl mb-12 -mt-10 leading-relaxed">
+        Demostración interactiva estilo Bento de los tokens de color y degradados que componen la estética en dark mode con acento y glassmorphism del sitio.
+    </p>
+
+    <BentoColoresReact client:visible />
+</div>

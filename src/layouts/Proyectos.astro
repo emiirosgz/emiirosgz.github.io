@@ -6,6 +6,8 @@ import {ExternalLink} from "@/assets/icons"
 import BackTo from "@/components/ui/BackToHome.astro";
 import Section from "@/components/ui/Section.astro";
 import ExploraMas from "@/components/ui/ExploraMas.astro";
+import { Image } from "astro:assets";
+import { resolveImage } from "@/lib/utils";
 
 const wh = "16px"
 
@@ -24,7 +26,7 @@ const {
   solucion,
   link
 } = Astro.props;
-const imageSrc = typeof imagen === "string" ? imagen : imagen?.src;
+const finalImage = resolveImage(imagen);
 
 // volver a index
 const navHref = NAV_ITEMS.find((n) => n.href === "/proyectos");
@@ -100,12 +102,14 @@ const navHref = NAV_ITEMS.find((n) => n.href === "/proyectos");
     <div class="grid grid-cols-1 md:grid-cols-2 pt-24 gap-12 md:gap-16">
       <div>
         {
-          imageSrc ? (
-            <img
-              src={imageSrc}
+          finalImage ? (
+            <Image
+              src={finalImage}
               alt={titulo}
-              class="w-full h-auto rounded-xl border border-white/10"
               loading="lazy"
+              decoding="async"
+              quality={85}
+              class="w-full h-auto rounded-xl border border-white/10"
             />
           ) : null
         }

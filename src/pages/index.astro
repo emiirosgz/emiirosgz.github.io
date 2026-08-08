@@ -2,24 +2,33 @@
 import { SITE_TITLE as title, SITE_DESCRIPTION as description } from '@/lib/consts';
 import Layout from '../layouts/Layout.astro';
 import Hero from "@/components/sections/Hero.astro";
-import Destacado from '@/components/sections/Destacado.astro'
-import MindSet from '@/components/sections/GridCardMindSet.astro'
+import Destacado from '@/components/sections/Destacado.astro';
+import Servicios from '@/components/sections/GridCardServicios.astro';
 import ExploraMas from '@/components/ui/ExploraMas.astro';
 import Sobremi from '@/components/sections/Sobremi.astro';
-import FAQs from '@/components/sections/FAQs.astro'
+import CTA from "@/components/sections/CTA.astro";
+import FAQs from '@/components/sections/FAQs.astro';
+import CtaReunion from '@/components/sections/CtaReunion.astro';
 ---
 
 <Layout title={title} description={description}>
 
 	<Hero/>
-	<MindSet/>
-	<div class="max-w-7xl mx-auto">
+	<Servicios/>
+	<div class="max-w-7xl mx-auto px-6">
 		<Sobremi/>
+		    <CTA
+        titulo="Conoce mi trayectoria"
+        desc="Si está buscando un freelance que pueda ayudarte a crear un sitio web profesional me encantaría trabajar contigo."
+        href="/acercade"
+        etiqueta="Ver acerca de"
+    />
 	</div>
 	<Destacado/>
 	<div class="pb-16 md:pb-32">
 		<ExploraMas overtext='Conoce más' titulo='Explora más trabajos'/>
 	</div>
+	<CtaReunion />
 	<FAQs/>
 
 </Layout>

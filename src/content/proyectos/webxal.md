@@ -1,6 +1,6 @@
 ---
-categoria: 'Client Work'
-titulo: 'Lanzamiento de Agencia WebXal'
+categoria: 'Proyectos Propios'
+titulo: 'Agencia de Marketing Digital WebXal'
 short_desc: 'Diseño y desarrollo web moderno para la presentación de servicios freelance.'
 anno: 2025
 cliente: 'Yo misma (Proyecto Propio)'

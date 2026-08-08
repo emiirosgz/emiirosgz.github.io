@@ -12,7 +12,7 @@ beneficio:
 capacidades:
     - 'Desarrollo Frontend'
     - 'Compilación y Despliegue'
-    - 'Mantenimiento en Hosting'
+    - 'Mantenimiento y Hosting'
 stack:
     - 'VS Code'
     - 'Astro'

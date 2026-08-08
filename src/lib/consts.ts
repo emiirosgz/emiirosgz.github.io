@@ -1,19 +1,21 @@
 // =========== imports ===========
 import type { NavItem, Capabilities, Experiencia, LinksInteres, CategoriasProyectos, ServiceWorkflow, FAQItem  } from "../types"
-import {Layers, Globe, Code} from '@/assets/icons'
+import {Layers, Globe, Code, Database} from '@/assets/icons'
+import imgDisennoRedes from '@/assets/imgs/servicios/disenno-redes.webp';
+import imgSeo from '@/assets/imgs/servicios/seo.webp';
+import imgWebdesign from '@/assets/imgs/servicios/webdesign.webp';
+import imgAlojamientoWeb from '@/assets/imgs/servicios/alojamiento-web.webp';
 
 // =========== consts ===========
 export const SITE_TITLE = 'Emii Rosgz | Portafolio profesional';
 export const SITE_DESCRIPTION = 'Diseñadora multidiciplanaria';
 
-export const PRINCIPAL_SITE = {href: '/'}
-
 export const NAV_ITEMS : NavItem[] = [
     { href: "/", label: "Inicio" },
-    { href: "/clientes", label: "Clientes" },
+    { href: "/proceso", label: "Proceso" },
     { href: "/proyectos", label: "Proyectos" },
     { href: "/servicios", label: "Servicios" },
-    { href: "/#contacto", label: "Contacto" },
+    { href: "/contacto", label: "Contacto" },
 ]
 
 // ======== Categorias ========
@@ -21,12 +23,12 @@ export const CATEGORIAS: CategoriasProyectos[] = [
     {
         id: 'Client Work',
         href: 'client-work',
-        desc: 'texto descriptivo para proyectos de clientes'
+        desc: 'Proyectos digitales a medida desarrollados para marcas, empresas y clientes. Enfocados en resolver necesidades reales de negocio, optimizar la conversión y potenciar la presencia digital.'
     },
     {
-        id: 'Web App Lab',
-        href: 'web-app-lab',
-        desc: 'texto descriptivo para proyectos personales de laboratorio'
+        id: 'Proyectos Propios',
+        href: 'proyectos-propios',
+        desc: 'Iniciativas y productos digitales desarrollados 100% por mí para el público general, que abarcan desde pequeñas webapps interactivas hasta sitios web completos y plataformas funcionales.'
     },
 ]
 
@@ -46,8 +48,7 @@ export const Servicios : Capabilities[] = [
           'Coherencia de marca en todos los puntos de contacto',
           'Sistemas de diseño escalables y documentados',
         ],
-        img:"src/assets/imgs/servicios/disenno-redes.webp",
-        // relacionados: "",
+        img: imgDisennoRedes,
         stack:['Figma', 'Adobe Suite', 'Affinity', 'DaVinci Resolve', 'PowerPoint'],
         tags:['Ui & Ux','Brand','Editorial','Design Systems', 'CopyWriting'],
     },
@@ -64,9 +65,8 @@ export const Servicios : Capabilities[] = [
           'Estructuras web pensadas para la conversión',
           'Auditorías claras con roadmaps accionables'
         ],
-        img:"src/assets/imgs/servicios/seo.webp",
-        // relacionados: "",
-        stack:['Google Analitycs', 'Search Console', 'Semrush (básico)', 'Excel'],
+        img: imgSeo,
+        stack:['Google Analytics', 'Search Console', 'Semrush', 'Excel'],
     },
     {
         id:"desarrollo-web",
@@ -74,17 +74,33 @@ export const Servicios : Capabilities[] = [
         icon: Code,
         titulo: "Desarrollo Web",
         descripcion: "Consigue una web profesional, segura y optimizada. Mejora tu presencia digital y consigue más conversiones para tu negocio.",
-        lista:['Desarrollo Frontend', 'Compilación y Despliegue', 'Mantenimiento en Hosting'],
+        lista:['Desarrollo Frontend', 'Compilación y Despliegue', 'Mantenimiento y Hosting'],
         long_desc: 'Cierro la brecha entre el lienzo de diseño y el navegador. Escribo código limpio, modular y optimizado para el rendimiento utilizando frameworks modernos como React o Astro. No dependo de constructores visuales pesados, lo que me permite garantizar tiempos de carga ultrarrápidos y un control total sobre el despliegue.',
         beneficio: [
           'Tiempos de carga ultrarrápidos (Core Web Vitals)',
           'Código limpio y libre de dependencias innecesarias',
           'Despliegues continuos sin interrupciones',
         ],
-        img:"src/assets/imgs/servicios/webdesign.webp",
-        // relacionados: "",
+        img: imgWebdesign,
         stack:['VS Code', 'Astro', 'Tailwind', 'React', 'Angular', 'Git & GitHub', 'JavaScript'],
         tags:['Hostinger', 'Frontend', 'WordPress', 'Linux', 'WSL2' ]
+    },
+    {
+        id:"alojamiento-web",
+        href:"alojamiento-web",
+        icon: Database,
+        titulo: "Alojamiento Web",
+        descripcion: "Servicios de hosting seguro, migración de servidores, certificados SSL y mantenimiento técnico continuo.",
+        lista:['Hosting & Dominio', 'Migración de Servidor', 'Administración Linux/SSL'],
+        long_desc: 'Un sitio web necesita un hogar rápido, estable y seguro. Configuro servidores optimizados, gestiono migración de dominios, SSL y garantizo que tu plataforma esté en línea las 24 horas del día con soporte continuo.',
+        beneficio: [
+          'Uptime garantizado 99.9% y alta velocidad de respuesta',
+          'Configuración SSL, correos corporativos y respaldos periódicos',
+          'Migraciones sin interrupción del servicio',
+        ],
+        img: imgAlojamientoWeb,
+        stack:['Hostinger', 'Linux', 'WSL2', 'DNS & SSL', 'Git & GitHub'],
+        tags:['Hosting', 'Servidores', 'Linux', 'DNS', 'SSL']
     }
 ]
 
@@ -172,6 +188,33 @@ export const FlujosTrabajo: ServiceWorkflow[] = [
           "Una vez concluido el desarrollo, se realiza la entrega del proyecto según lo establecido en la cotización. El sitio queda preparado para su publicación o puesta en producción, incluyendo los accesos y documentación acordados."
       }
     ]
+  },
+  {
+    id: "alojamiento-web",
+    encabezado: "Alojamiento Web",
+    introduccion:
+      "Garantizo la estabilidad, velocidad y seguridad de tu sitio web mediante la elección y configuración adecuada de hosting, nombres de dominio y certificados SSL.",
+
+    condiciones:
+      "El alcance técnico y requerimientos de servidor se detallan en la cotización entregada al cliente. Los servicios de migración y alojamiento se trabajan bajo pago único o planes de mantenimiento periódico según la opción seleccionada.",
+
+    pasos: [
+      {
+        titulo: "01 · Diagnóstico",
+        descripcion:
+          "Evaluamos el peso, requerimientos de tecnología, tráfico esperado y hosting actual de tu sitio para definir la arquitectura de servidor ideal."
+      },
+      {
+        titulo: "02 · Migración / Configuración",
+        descripcion:
+          "Ejecutamos la migración de archivos, base de datos, zona DNS y certificados SSL o la preparación del nuevo entorno sin interrumpir la disponibilidad web."
+      },
+      {
+        titulo: "03 · Puesta en Producción & Entrega",
+        descripcion:
+          "Comprobamos la estabilidad, velocidad y cuentas de correo vinculadas, entregando credenciales de acceso y reportes de estado."
+      }
+    ]
   }
 ];
 
@@ -185,87 +228,21 @@ export const ExperienciaInfo : Experiencia[] = [
         descripcion: 'Mis proyectos van desde auditorías digitales para clientes B2B/B2C, hasta webs funcionales que resuelven problemas operativos concretos. Siempre con criterio visual y ejecución técnica.',
     },
     {
-        puesto: 'Analista de Marketing',
-        empresa: 'Barradas Equipos Comerciales',
-        fechaInicio: '2026',
-        fechaFin: '2026',
-        descripcion: 'Auditoría intensiva del ecosistema digital de una empresa de equipos comerciales. Evaluación de canales, propuesta de reestructuración de contenido pilar y diagnóstico de mercado B2B/B2C.',
-    },
-    {
         puesto: 'Marketing Digital',
         empresa: 'Grupo Tokio S.A. de C.V.',
         fechaInicio: '2023',
         fechaFin: '2024',
         descripcion: 'Desarrollé contenido creativo para redes sociales, campañas, videos, además de administrar y actualizar el catálogo de la tienda en línea. También coordiné proveedores internos y externos, elaboré reportes y análisis de desempeño, y participé en la planeación estratégica de marketing para la temporada escolar 2023.',
     },
+    {
+        puesto: 'Docencia Universitaria',
+        empresa: 'Universidad del Tercer Milenio',
+        fechaInicio: '2022',
+        fechaFin: '2023',
+        descripcion: 'Profesora universitaria en la licenciatura en Diseño Gráfico y profesora de informática para nivel media superior (bachillerato).',
+    },
+
 ]
-
-// ======== FAQs Generales de mis servicios ========
-export const FAQsGenerales: FAQItem[] = [
-  {
-    pregunta: "¿Cómo es tu proceso de trabajo integral?",
-    respuesta: "Mi enfoque es punta a punta (end-to-end). Tengo la capacidad de entender tus objetivos de negocio, traducirlos en una estrategia de contenido clara, diseñar la experiencia de usuario en Figma y finalmente programar la solución final sin intermediarios. Esto elimina la brecha de comunicación entre diseñadores y desarrolladores, garantizando que el producto final sea exactamente lo que se planificó."
-  },
-  {
-    pregunta: "¿Puedo contratar solo uno de los servicios de forma independiente?",
-    respuesta: "Sí, absolutamente. Aunque mis servicios de diseño, estrategia y código se potencian mutuamente, están estructurados de forma modular. Podemos trabajar únicamente en el diseño UI/UX de tu producto, realizar solo una auditoría de estrategia/SEO, o bien, si ya tienes los diseños listos, me puedo encargar exclusivamente del desarrollo frontend."
-  },
-  {
-    pregunta: "¿Qué ventajas tiene que una misma persona diseñe y programe?",
-    respuesta: "La principal ventaja es la eficiencia técnica y la fidelidad del diseño. Al diseñar sé perfectamente cómo se va a comportar ese elemento en el navegador, qué tan costoso es a nivel de rendimiento y cómo optimizarlo desde el lienzo. El resultado es un producto libre de inconsistencias visuales, código más limpio y un desarrollo mucho más ágil."
-  }
-];
-
-// ======== FAQs Particulares por cada servicio ========
-
-// FAQs Diseño & Experiencia
-export const FAQsDisenoExperiencia: FAQItem[] = [
-  {
-    pregunta: "¿Qué es un sistema de diseño y por qué dices que es escalable?",
-    respuesta: "Un sistema de diseño no es solo una plantilla; es una biblioteca viva de componentes (botones, tipografías, formularios, layouts) documentada y reutilizable. Permite que si mañana tu negocio crece o añade nuevas secciones, no tengas que rediseñar todo desde cero, garantizando la coherencia de tu marca y ahorrando cientos de horas de diseño y desarrollo en el futuro."
-  },
-  {
-    pregunta: "¿Cómo logras reducir el abandono de usuarios en una web?",
-    respuesta: "Lo logro reduciendo la fricción cognitiva. Diseño interfaces limpias basadas en la lógica del usuario y no en suposiciones. Estructuro la navegación para que encontrar la información o realizar una compra requiera el menor esfuerzo posible, creando flujos visualmente atractivos pero estrictamente funcionales."
-  },
-  {
-    pregunta: "¿En qué herramientas entregas los prototipos y diseños?",
-    respuesta: "Mi herramienta principal para UI/UX y maquetado es Figma, donde tendrás acceso total a los lienzos de trabajo de forma transparente. Para la dirección de arte y creación de contenido multimedia complementario me apoyo en Adobe Suite, Affinity y DaVinci Resolve."
-  }
-];
-
-// FAQs Estrategia & Contenido
-export const FAQsEstrategiaContenido: FAQItem[] = [
-  {
-    pregunta: "¿Qué diferencia hay entre una web bonita y una web con estrategia?",
-    respuesta: "Una web hermosa sin estrategia es un barco sin brújula. La estrategia se encarga de analizar a tu audiencia (B2B o B2C), definir qué información debe ir primero, estructurar un embudo de conversión y optimizar la arquitectura del sitio para que no solo reciba visitas, sino que guíe orgánicamente al usuario a realizar una acción comercial."
-  },
-  {
-    pregunta: "¿Cómo abordas el posicionamiento SEO en tus proyectos?",
-    respuesta: "No creo en trucos mágicos, creo en estructuras sólidas. Construyo arquitecturas de información limpias y semánticas que Google pueda indexar fácilmente. Analizo palabras clave y competidores para definir pilares de contenido que resuelvan las intenciones de búsqueda reales de tus clientes potenciales."
-  },
-  {
-    pregunta: "¿Cómo mides el rendimiento y el éxito de la estrategia implementada?",
-    respuesta: "Tomo decisiones basadas en datos, no en intuiciones. Implemento y configuro herramientas analíticas clave como Google Analytics y Google Search Console. A través de ellas monitoreamos el tráfico orgánico cualificado, el comportamiento de los usuarios en el sitio y te entrego auditorías claras con roadmaps accionables."
-  }
-];
-
-// FAQs Code & Build
-export const FAQsCodeBuild: FAQItem[] = [
-  {
-    pregunta: "¿Por qué desarrollas con Astro o React en lugar de constructores visuales comunes?",
-    respuesta: "Los constructores visuales tradicionales suelen inyectar demasiado código basura, ralentizando tu sitio. Al desarrollar código a medida con frameworks modernos como Astro o React, garantizo tiempos de carga ultrarrápidos y un control total del rendimiento. Esto es crucial tanto para retener usuarios como para cumplir con los Core Web Vitals de Google, influyendo directamente en tu posicionamiento SEO."
-  },
-  {
-    pregunta: "¿Qué incluye el servicio de mantenimiento y despliegue en hosting?",
-    respuesta: "Me encargo de configurar tu ecosistema en servidores como Hostinger o plataformas en la nube, garantizando entornos seguros bajo entornos Linux/WSL2. Además, implemento flujos de trabajo con Git y GitHub para realizar despliegues continuos: esto significa que cualquier cambio o actualización se sube a producción de forma limpia y transparente, sin interrumpir el servicio de tu web."
-  },
-  {
-    pregunta: "¿El código que desarrollas es fácil de mantener si mi proyecto crece?",
-    respuesta: "Completamente. Escribo código frontend limpio, modular, documentado y libre de dependencias innecesarias, utilizando estándares de la industria como JavaScript moderno y Tailwind CSS para los estilos. Si el día de mañana se integra un equipo de desarrollo más grande a tu empresa, podrán leer y escalar el código sin complicaciones."
-  }
-];
-
 
 // ======== Footer links ========
 
@@ -279,7 +256,15 @@ export const FooterLinks : LinksInteres[] = [
         href: '/acercade'
     },
     {
+        label: 'FAQs',
+        href: '/faqs'
+    },
+    {
         label: 'Mi CV',
         href: 'https://drive.google.com/file/d/1Wz5p9_o6GE9gnAf-54Oguit1mKUufaxI/view?usp=sharing'
+    },
+    {
+        label: 'Aviso de Privacidad',
+        href: '/aviso-privacidad'
     },
 ]

@@ -1,0 +1,169 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Section from "@/components/ui/Section.astro";
+import Button from "@/components/ui/Button.astro";
+import { FAQS_POR_SERVICIO } from "@/lib/faqs";
+import { SITE_TITLE } from "@/lib/consts";
+import { ChevronDown, ChevronRight } from "@/assets/icons";
+---
+
+<Layout
+    title={`Preguntas Frecuentes (FAQs) | ${SITE_TITLE}`}
+    description="Resuelve tus dudas sobre diseño UI/UX, desarrollo web, consultoría SEO y hosting sin rodeos ni tecnicismos."
+>
+    <Section>
+        <!-- Encabezado Principal -->
+        <div class="max-w-7xl mx-auto px-6 mb-16 text-center">
+            <span class="font-mono text-xs text-(--accent) uppercase tracking-widest block mb-3">
+                // Respuestas Rápidas
+            </span>
+            <h1 class="font-display text-4xl md:text-6xl lg:text-7xl font-medium text-white mb-6 leading-tight">
+                Preguntas Frecuentes
+            </h1>
+            <p class="text-lg md:text-xl text-[#A1A1AA] font-light max-w-2xl mx-auto leading-relaxed">
+                Respuestas claras a las dudas más comunes sobre mis servicios, tiempos, entregables y formas de trabajo. Sin rodeos ni tecnicismos.
+            </p>
+        </div>
+
+        <!-- Secciones de FAQs agrupadas por Servicio -->
+        <div class="max-w-4xl mx-auto px-6 space-y-16 mb-24">
+            {FAQS_POR_SERVICIO.map((cat) => (
+                <div class="space-y-6 mb-8">
+                    <!-- Título del Servicio -->
+                    <div class="border-b border-white/10 pb-4">
+                        <span class="font-mono text-xs text-(--accent) uppercase tracking-widest block mb-1">
+                            // Servicio
+                        </span>
+                        <h2 class="font-display text-2xl md:text-3xl text-white font-medium">
+                            {cat.servicioNombre}
+                        </h2>
+                    </div>
+
+                    <!-- Acordeones de Preguntas -->
+                    <div class="space-y-4">
+                        {cat.preguntas.map((faq) => (
+                            <details class="faq-accordion group bg-[#141414]/80 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-white/25">
+                                <summary class="flex items-center justify-between p-6 cursor-pointer select-none font-display text-lg md:text-xl text-white font-medium transition-colors">
+                                    <span class="faq-question pr-4 leading-snug transition-colors duration-300">{faq.pregunta}</span>
+                                    <div class="faq-icon-wrapper transition-transform duration-500 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
+                                        <ChevronDown width="18" height="18" className="text-[#A1A1AA]" />
+                                    </div>
+                                </summary>
+                                <div class="faq-content-wrapper grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-in-out">
+                                    <div class="overflow-hidden">
+                                        <div class="px-6 pb-6 pt-3 text-[#A1A1AA] text-base leading-relaxed font-light border-t border-white/5">
+                                            {faq.respuesta}
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+                        ))}
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <!-- CTA para dudas personalizadas -->
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="relative overflow-hidden bg-linear-to-b from-[#141414] to-[#0A0A0A] border border-white/10 hover:border-(--accent)/30 rounded-2xl p-8 md:p-12 text-center transition-all duration-500 group shadow-2xl">
+                <!-- Resplandor sutil -->
+                <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-80 bg-(--accent)/15 rounded-full blur-3xl pointer-events-none group-hover:bg-(--accent)/25 transition-all duration-700"></div>
+
+                <div class="relative z-10 max-w-xl mx-auto flex flex-col items-center">
+                    <span class="px-3.5 py-1 text-xs font-mono tracking-widest text-(--accent) bg-(--accent)/10 border border-(--accent)/20 rounded-full uppercase mb-4 inline-block">
+                        ¿Tienes otra pregunta?
+                    </span>
+                    <h3 class="font-display text-2xl md:text-4xl font-medium text-white mb-4">
+                        ¿No encontraste lo que buscabas?
+                    </h3>
+                    <p class="text-sm md:text-base text-[#A1A1AA] font-light leading-relaxed mb-8">
+                        Escríbeme directamente con los detalles de tu caso y con gusto te orientaré sobre la mejor solución para tu proyecto.
+                    </p>
+                    <Button
+                        etiqueta="Hacer una consulta"
+                        href="/contacto"
+                        variante="acento"
+                        conIcono
+                    >
+                        <ChevronRight slot="icon" width="18" height="18" />
+                    </Button>
+                </div>
+            </div>
+        </div>
+    </Section>
+</Layout>
+
+<style>
+    :global(.faq-accordion.is-open .faq-question) {
+        color: var(--accent);
+    }
+    :global(.faq-accordion.is-open .faq-icon-wrapper) {
+        background-color: rgba(133, 198, 28, 0.15);
+        border-color: rgba(133, 198, 28, 0.3);
+        color: var(--accent);
+    }
+    :global(.faq-accordion.is-open .faq-icon-wrapper svg) {
+        color: var(--accent);
+    }
+    :global(.faq-accordion.is-open .faq-content-wrapper) {
+        grid-template-rows: 1fr;
+        opacity: 1;
+    }
+</style>
+
+<script>
+    function initFaqAccordions() {
+        const accordions = document.querySelectorAll<HTMLDetailsElement>('details.faq-accordion');
+
+        accordions.forEach((details) => {
+            const summary = details.querySelector('summary');
+            if (!summary) return;
+
+            if (summary.dataset.accordionInitialized === 'true') return;
+            summary.dataset.accordionInitialized = 'true';
+
+            let isAnimating = false;
+
+            summary.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+
+                const isOpen = details.classList.contains('is-open');
+                const icon = summary.querySelector('.faq-icon-wrapper') || summary.querySelector('svg');
+
+                if (isOpen) {
+                    isAnimating = true;
+                    details.classList.remove('is-open');
+                    if (icon) {
+                        icon.classList.remove('rotate-180');
+                    }
+
+                    setTimeout(() => {
+                        details.open = false;
+                        isAnimating = false;
+                    }, 300);
+                } else {
+                    details.open = true;
+                    isAnimating = true;
+                    if (icon) {
+                        icon.classList.add('rotate-180');
+                    }
+
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            details.classList.add('is-open');
+                            isAnimating = false;
+                        });
+                    });
+                }
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFaqAccordions);
+    } else {
+        initFaqAccordions();
+    }
+    document.addEventListener('astro:page-load', initFaqAccordions);
+</script>

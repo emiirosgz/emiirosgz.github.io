@@ -4,6 +4,10 @@ import { ClientRouter } from "astro:transitions";
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/fallback-emiirosgz.webp';
 import { SITE_TITLE } from '@/lib/consts'
+import { Font } from "astro:assets";
+import { getPersonSchema, getServicesSchema } from '@/lib/seo';
+import { basePath } from '@/lib/utils';
+
 interface Props {
 	title: string;
 	description: string;
@@ -12,6 +16,9 @@ interface Props {
 const siteUrl = Astro.site ?? Astro.url.origin;
 const canonicalURL = new URL(Astro.url.pathname, siteUrl);
 const pageUrl = Astro.url.toString();
+
+const personSchema = getPersonSchema();
+const servicesSchema = getServicesSchema();
 
 const {
     title,
@@ -23,9 +30,11 @@ const {
     <!-- Global Metadata -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href={basePath("/favicon.svg")} />
+    <link rel="icon" href={basePath("/favicon.ico")} />
+    <link rel="manifest" href={basePath("/manifest.json")} />
+    <meta name="theme-color" content="#85C61C" />
+    <link rel="sitemap" href={basePath("/sitemap-index.xml")} />
     <link
         rel="alternate"
         type="application/rss+xml"
@@ -49,12 +58,20 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(image.src, pageUrl).toString()} />
 
-    <!-- Twitter -->
+    <!-- Twitter (X) -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={pageUrl} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image.src, pageUrl).toString()} />
 
+
+    <!-- jsonld -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(servicesSchema)} />
+
+    <!-- Astro -->
     <ClientRouter />
+    <Font cssVariable="--sans" preload />
+    <Font cssVariable="--display" preload />
 </head>

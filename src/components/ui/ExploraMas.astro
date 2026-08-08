@@ -11,7 +11,7 @@ const {overtext,titulo}  = Astro.props;
 
 type ProyectoRelacionado = {
   href: string;
-  imgSrc: string;
+  imgSrc: any;
   titulo: string;
   categoria: string;
 };
@@ -34,10 +34,7 @@ function shuffle<T>(items: T[]) {
 const proyectos: ProyectoRelacionado[] = shuffle(proyectosData)
   .slice(0, 3)
   .map((project) => {
-    const image =
-      typeof project.data.imagen === "string"
-        ? project.data.imagen
-        : project.data.imagen?.src ?? "https://placehold.co/320x320/141414/EDEDED?text=Proyecto";
+    const image = project.data.imagen ?? "https://placehold.co/320x320/141414/EDEDED?text=Proyecto";
     return {
       href: `/proyectos/${categoryHref(project.data.categoria)}/${project.id}`,
       imgSrc: image,

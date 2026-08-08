@@ -10,8 +10,8 @@ beneficio:
     - 'Coherencia de marca en todos los puntos de contacto'
     - 'Sistemas de diseño escalables y documentados'
 capacidades:
-    - 'UI/UX Design'
-    - 'Creación de contenido'
+    - 'Diseño UI/UX'
+    - 'Diseño para post de redes sociales'
     - 'Maquetado & Prototipado'
 stack:
     - 'Figma'

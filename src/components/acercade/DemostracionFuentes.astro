@@ -1,0 +1,14 @@
+---
+import InfoSeccion from '@/components/sections/TituloSeccion.astro';
+import DemostracionFuentesReact from './DemostracionFuentes';
+---
+
+<div id="demostracion-fuentes" class="mb-28">
+    <InfoSeccion titulo="Tipografía & Fuentes del Sitio" en="Typography Specimen"/>
+    
+    <p class="text-(--lightgray) text-lg max-w-3xl mb-12 -mt-10 leading-relaxed">
+        Demostración visual del sistema tipográfico utilizado en la plataforma. Cada fuente ha sido elegida para transmitir jerarquía, dinamismo visual y legibilidad en pantallas digitales.
+    </p>
+
+    <DemostracionFuentesReact client:visible />
+</div>

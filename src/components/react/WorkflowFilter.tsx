@@ -43,10 +43,9 @@ export default function WorkflowFilter({ flujosTrabajo }: Props) {
 
       {/* Encabezado */}
       <div className="space-y-6 mb-12">
-        <span className="font-mono text-sm text-[#A1A1AA]">
-          Trabajemos juntos
+        <span className="font-mono text-xs text-(--accent) uppercase tracking-widest block mb-1">
+            // Trabajemos juntos
         </span>
-
         <h1 className="text-3xl md:text-5xl font-light leading-tight">
           Impulsa tu proyecto con <br />
           <span className="text-(--accent)">{servicioActivo.encabezado}</span> en

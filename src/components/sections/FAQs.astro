@@ -1,18 +1,134 @@
 ---
-import { FAQsGenerales } from '@/lib/consts';
-import InfoSeccion from '@/components/sections/TituloSeccion.astro'
-import FAQItem from '@/components/ui/FAQItem.astro'
+import InfoSeccion from '@/components/sections/TituloSeccion.astro';
+import { FAQS_POR_SERVICIO } from '@/lib/faqs';
+import Button from '@/components/ui/Button.astro';
+import { ChevronDown, ChevronRight } from '@/assets/icons';
+
+// Selección de las preguntas más destacadas de cada categoría en faqs.ts
+const preguntasDestacadas = FAQS_POR_SERVICIO.flatMap((cat) => 
+    cat.preguntas.slice(0, 2).map((faq) => ({
+        ...faq,
+        servicioNombre: cat.servicioNombre
+    }))
+).slice(0, 6);
 ---
-<section class="py-10 mb-24 lg:mb-32 bg-(--c-green-900)">
-    <div class="max-w-7xl mx-auto px-6 pt-16">
-        <InfoSeccion titulo="Preguntas Frecuentes" numero="04" en="FAQs"/>
-    
-        <div class="grid grid-cols-1 gap-6">
-            {FAQsGenerales.map((faq) => (
-                <FAQItem pregunta={faq.pregunta} respuesta={faq.respuesta} />
+
+<section id="faqs" class="py-16 mb-24 lg:mb-32 bg-(--c-green-900)">
+    <div class="max-w-7xl mx-auto px-6">
+        <!-- Encabezado de la Sección -->
+        <InfoSeccion titulo="Preguntas Frecuentes" en="FAQs" className="mb-12"/>
+
+        <!-- Acordeón interactivo de Preguntas Frecuentes con animación suave -->
+        <div class="max-w-4xl mx-auto space-y-4 mb-12">
+            {preguntasDestacadas.map((faq) => (
+                <details class="faq-accordion group bg-[#141414]/90 backdrop-blur-xl border border-white/10 hover:border-white/25 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer select-none font-display text-lg md:text-xl text-white font-medium transition-colors">
+                        <div class="flex flex-col gap-1 pr-4">
+                            <span class="font-mono text-[11px] text-(--accent) uppercase tracking-wider">
+                                // {faq.servicioNombre}
+                            </span>
+                            <span class="faq-question leading-snug transition-colors duration-300">{faq.pregunta}</span>
+                        </div>
+                        <div class="faq-icon-wrapper transition-transform duration-500 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                            <ChevronDown width="18" height="18" className="text-[#A1A1AA]" />
+                        </div>
+                    </summary>
+                    <div class="faq-content-wrapper grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-in-out">
+                        <div class="overflow-hidden">
+                            <div class="px-6 pb-6 pt-3 text-[#A1A1AA] text-base leading-relaxed font-light border-t border-white/5">
+                                {faq.respuesta}
+                            </div>
+                        </div>
+                    </div>
+                </details>
             ))}
         </div>
+
+        <!-- Botón Ver Todas las FAQs -->
+        <div class="flex justify-center">
+            <Button
+                etiqueta="Ver todas las preguntas frecuentes"
+                href="/faqs"
+                variante="borde"
+                conIcono
+            >
+                <ChevronRight slot="icon" width="18" height="18" />
+            </Button>
+        </div>
     </div>
-
-
 </section>
+
+<style>
+    :global(.faq-accordion.is-open .faq-question) {
+        color: var(--accent);
+    }
+    :global(.faq-accordion.is-open .faq-icon-wrapper) {
+        background-color: rgba(133, 198, 28, 0.15);
+        border-color: rgba(133, 198, 28, 0.3);
+        color: var(--accent);
+    }
+    :global(.faq-accordion.is-open .faq-icon-wrapper svg) {
+        color: var(--accent);
+    }
+    :global(.faq-accordion.is-open .faq-content-wrapper) {
+        grid-template-rows: 1fr;
+        opacity: 1;
+    }
+</style>
+
+<script>
+    function initFaqAccordions() {
+        const accordions = document.querySelectorAll<HTMLDetailsElement>('details.faq-accordion');
+
+        accordions.forEach((details) => {
+            const summary = details.querySelector('summary');
+            if (!summary) return;
+
+            if (summary.dataset.accordionInitialized === 'true') return;
+            summary.dataset.accordionInitialized = 'true';
+
+            let isAnimating = false;
+
+            summary.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+
+                const isOpen = details.classList.contains('is-open');
+                const icon = summary.querySelector('.faq-icon-wrapper') || summary.querySelector('svg');
+
+                if (isOpen) {
+                    isAnimating = true;
+                    details.classList.remove('is-open');
+                    if (icon) {
+                        icon.classList.remove('rotate-180');
+                    }
+
+                    setTimeout(() => {
+                        details.open = false;
+                        isAnimating = false;
+                    }, 300);
+                } else {
+                    details.open = true;
+                    isAnimating = true;
+                    if (icon) {
+                        icon.classList.add('rotate-180');
+                    }
+
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            details.classList.add('is-open');
+                            isAnimating = false;
+                        });
+                    });
+                }
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFaqAccordions);
+    } else {
+        initFaqAccordions();
+    }
+    document.addEventListener('astro:page-load', initFaqAccordions);
+</script>

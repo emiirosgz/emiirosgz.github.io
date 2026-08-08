@@ -1,0 +1,163 @@
+---
+import InfoServicios from "./TituloSeccion.astro";
+import Card from "../ui/CardMindSet.astro";
+import { Servicios} from "@/lib/consts";
+import CTA from '@/components/sections/CTA.astro';
+import { basePath } from "@/lib/utils";
+---
+
+<section id="skills" class="py-10 mb-24 lg:mb-32 bg-(--c-green-900)">
+    <div class="max-w-7xl mx-auto px-6 pt-16">
+        <!-- Encabezado y Controles de Navegación del Carrusel -->
+        <InfoServicios titulo="Servicios" en="Services" className="md:mb-4"/>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+            <div class="grow"></div>
+            <!-- Botones de Navegación -->
+            <div class="flex items-center gap-3 self-end sm:self-auto">
+                <button
+                    id="servicios-prev"
+                    aria-label="Servicio anterior"
+                    class="w-10 h-10 rounded-full border border-white/10 bg-black/40 hover:bg-(--accent) hover:text-black hover:border-(--accent) text-white transition-all duration-300 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button
+                    id="servicios-next"
+                    aria-label="Siguiente servicio"
+                    class="w-10 h-10 rounded-full border border-white/10 bg-black/40 hover:bg-(--accent) hover:text-black hover:border-(--accent) text-white transition-all duration-300 flex items-center justify-center cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    
+        <!-- Carrusel Contenedor -->
+        <div class="relative mb-12">
+            <div 
+                id="servicios-carousel" 
+                class="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2 -mx-2 px-2 no-scrollbar"
+                style="scrollbar-width: none; -ms-overflow-style: none;"
+            >
+                {
+                    Servicios.map((info) => (
+                        <div class="snap-start shrink-0 w-[85vw] sm:w-85 md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex flex-col">
+                            <a href={basePath(`/servicios/${info.id}`)} class="block h-full">
+                                <Card
+                                    imgSrc={info.img}
+                                    alt={info.titulo}
+                                    Icon={info.icon}
+                                    titulo={info.titulo}
+                                    descripcion={info.descripcion}
+                                    lista={info.lista}
+                                    wh="24px"
+                                />
+                            </a>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+
+        <CTA
+            titulo="¿Cómo podemos trabajar juntos?"
+            desc="Antes de hablar de propuestas o presupuestos, te explico cómo se desarrolla cada proyecto, qué puedes esperar durante el proceso y cómo se realiza la entrega."
+            href="/proceso"
+            etiqueta="Ver proceso de trabajo"
+        />
+    </div>
+</section>
+
+<script>
+    function initServiciosCarousel() {
+        const carousel = document.getElementById('servicios-carousel');
+        const prevBtn = document.getElementById('servicios-prev') as HTMLButtonElement | null;
+        const nextBtn = document.getElementById('servicios-next') as HTMLButtonElement | null;
+        const container = carousel?.parentElement;
+
+        if (!carousel || !prevBtn || !nextBtn) return;
+
+        let autoLoopTimer: number | null = null;
+        const INTERVAL_TIME = 3500; // 3.5 segundos por diapositiva
+
+        const getScrollAmount = () => {
+            const firstCard = carousel.firstElementChild as HTMLElement;
+            if (!firstCard) return 340;
+            return firstCard.offsetWidth + 24; // Ancho de la tarjeta + gap
+        };
+
+        const scrollNext = () => {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            if (carousel.scrollLeft >= maxScroll - 10) {
+                // Al llegar al final, vuelve al inicio
+                carousel.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+            }
+        };
+
+        const scrollPrev = () => {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            if (carousel.scrollLeft <= 10) {
+                // Al estar en el inicio, salta al final
+                carousel.scrollTo({ left: maxScroll, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+            }
+        };
+
+        const startAutoLoop = () => {
+            stopAutoLoop();
+            autoLoopTimer = window.setInterval(scrollNext, INTERVAL_TIME);
+        };
+
+        const stopAutoLoop = () => {
+            if (autoLoopTimer !== null) {
+                clearInterval(autoLoopTimer);
+                autoLoopTimer = null;
+            }
+        };
+
+        // Eventos manuales de navegación
+        prevBtn.addEventListener('click', () => {
+            scrollPrev();
+            startAutoLoop();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            scrollNext();
+            startAutoLoop();
+        });
+
+        // Pausa en hover sobre el carrusel o controles
+        if (container) {
+            container.addEventListener('mouseenter', stopAutoLoop);
+            container.addEventListener('mouseleave', startAutoLoop);
+        }
+        prevBtn.addEventListener('mouseenter', stopAutoLoop);
+        prevBtn.addEventListener('mouseleave', startAutoLoop);
+        nextBtn.addEventListener('mouseenter', stopAutoLoop);
+        nextBtn.addEventListener('mouseleave', startAutoLoop);
+
+        // Pausa al cambiar de pestaña
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoLoop();
+            } else {
+                startAutoLoop();
+            }
+        });
+
+        startAutoLoop();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initServiciosCarousel);
+    } else {
+        initServiciosCarousel();
+    }
+    document.addEventListener('astro:page-load', initServiciosCarousel);
+</script>
