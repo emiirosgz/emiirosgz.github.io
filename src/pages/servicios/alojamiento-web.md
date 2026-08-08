@@ -1,5 +1,5 @@
 ---
-layout: ./src/layouts/Servicio.astro
+layout: ../../layouts/Servicio.astro
 titlePage: 'Alojamiento Web & Hosting'
 descPage: 'Servicios de hosting seguro, configuración de servidores, dominios y mantenimiento continuo para tu sitio web.'
 titulo: 'Alojamiento Web'

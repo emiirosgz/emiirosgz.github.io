@@ -1,5 +1,5 @@
 ---
-layout: ./src/layouts/Servicio.astro
+layout: ../../layouts/Servicio.astro
 titlePage: 'Consultoría SEO en Xalapa'
 descPage: 'Construyo arquitecturas de información sólidas y pilares de contenido que no solo agradan a Google (SEO), sino que guían al usuario hacia la decisión de compra.'
 titulo: 'Consultoría SEO en Xalapa'
