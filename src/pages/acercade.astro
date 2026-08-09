@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import SobreMi from '@/components/sections/Sobremi.astro';
 import Experiencia from '@/components/sections/Experiencia.astro';
 import Section from '@/components/ui/Section.astro';
+import Educacion from '@/components/sections/Educacion.astro'
+import Constancias from '@/components/sections/Constancias.astro'
 
 import StackTecnologico from '@/components/acercade/StackTecnologico.astro';
 import ResumenServicios from '@/components/acercade/ResumenServicios.astro';
@@ -15,7 +17,15 @@ import SeccionDesplegable from '@/components/acercade/SeccionDesplegable.astro';
 <Layout title="Acerca de mí | Emireth Rosas" description="Conoce más sobre mi trayectoria, el stack tecnológico que utilizo, los servicios que domino, el sistema de diseño y la tecnología detrás de este portafolio web.">
     <Section>
         <SobreMi />
-        <Experiencia />
+        <div class="grid grid-cols-1 md:grid-cols-3 mb-24">
+            <div class="col-span-2">
+                <Experiencia />
+            </div>
+            <div>
+                <Educacion/>
+            </div>
+        </div>
+        <Constancias/>
         <StackTecnologico />
         <ResumenServicios />
         <TecnologiaSitio />

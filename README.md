@@ -1,4 +1,4 @@
-![emiirosgz cover image](https://raw.githubusercontent.com/emiirosgz/emiirosgz.github.io/main/img/coverIn2024.jpg)
+![emiirosgz cover image](https://raw.githubusercontent.com/emiirosgz/emiirosgz.github.io/refs/heads/main/src/assets/coverFB0-FREELANCE.jpg)
 
 <h1 align="center"> Hi 👋, I'm Emireth Rosas</h1> 
 

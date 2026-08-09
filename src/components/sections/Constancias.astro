@@ -1,0 +1,111 @@
+---
+import TituloSeccion from "./TituloSeccion.astro";
+import { Image } from "astro:assets";
+import ExternalLink from "@/assets/icons/ExternalLink";
+
+import imgGodesign from "@/assets/imgs/capacitacion/Godesign-Logo.avif";
+import imgTecnolochicas from "@/assets/imgs/capacitacion/tecnolochicas-logo.png";
+import imgUsicamm from "@/assets/imgs/capacitacion/usicamm-veracruz-logo.png";
+
+export interface ConstanciaItem {
+  titulo: string;
+  institucion: string;
+  descripcion: string;
+  anno: string;
+  imagen: ImageMetadata;
+  enlace: string;
+  alt?: string;
+}
+
+const constancias: ConstanciaItem[] = [
+  {
+    titulo: "Formación y Capacitación Docente",
+    institucion: "USICAMM Veracruz - SEV",
+    descripcion: "Cursos de actualización docente y formación pedagógica acreditados para el nivel medio superior.",
+    anno: "2024",
+    imagen: imgUsicamm,
+    alt: "Logo de USICAMM Veracruz",
+    enlace: "https://drive.google.com/file/d/1VEGl9GNSv5IU-Gxxa6EgSPGJcAjZSyfS/view?usp=sharing"
+  },
+  {
+    titulo: "Bootcamp en Tecnología",
+    institucion: "Tecnolochicas",
+    descripcion: "Capacitación intensiva enfocada en desarrollo web frontend, maquetación con HTML/CSS, lógica de programación y tecnología.",
+    anno: "2023",
+    imagen: imgTecnolochicas,
+    alt: "Logo de Tecnolochicas",
+    enlace: "https://drive.google.com/file/d/1KTcioyq2Uc_UdYxHyu7rIUR91oHGti-I/view?usp=sharing"
+  },
+  {
+    titulo: "Community Manager para Creativos",
+    institucion: "GoDesign",
+    descripcion: "Certificación y formación para Community Manager enfocada en Meta Business y campañas pagadas digitales.",
+    anno: "2023",
+    imagen: imgGodesign,
+    alt: "Logo de GoDesign",
+    enlace: "https://drive.google.com/file/d/1w3s50U6Uhh_KXB5EygTX-wrAktnV7IUb/view?usp=sharing"
+  }
+];
+---
+
+<div class="mb-24">
+  <TituloSeccion titulo="Formación Profesional" en="Certificates & Training" />
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {constancias.map((item) => (
+      <article class="group relative flex flex-col justify-between bg-neutral-900/60 border border-white/10 rounded-xl overflow-hidden hover:border-(--accent)/50 transition-all duration-300">
+        <!-- Indicador de hover superior/izquierdo -->
+        <div class="absolute top-0 left-0 w-1 h-0 group-hover:h-full bg-(--accent) transition-all duration-300 z-10"></div>
+        
+        <div>
+          <!-- Contenedor de la Imagen del Certificado/Organización -->
+          <div class="relative w-full h-44 bg-black/40 border-b border-white/5 flex items-center justify-center p-6 overflow-hidden">
+            <Image
+              src={item.imagen}
+              alt={item.alt || item.titulo}
+              class="max-h-24 w-auto object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="absolute top-3 right-3 text-xs font-mono text-neutral-400 bg-neutral-950/80 px-2.5 py-1 rounded-md border border-white/10">
+              {item.anno}
+            </span>
+          </div>
+
+          <!-- Contenido Informativo -->
+          <div class="p-6">
+            <span class="text-xs font-mono text-(--accent) font-semibold uppercase tracking-wider block mb-1">
+              {item.institucion}
+            </span>
+            <h3 class="text-lg font-bold text-white group-hover:text-(--accent) transition-colors mb-2">
+              {item.titulo}
+            </h3>
+            <p class="text-xs md:text-sm text-neutral-400 leading-relaxed">
+              {item.descripcion}
+            </p>
+          </div>
+        </div>
+
+        <!-- Enlace Externo (Nueva Ventana) -->
+        <div class="px-6 pb-6 pt-2">
+          {item.enlace && item.enlace !== '#' ? (
+            <a
+              href={item.enlace}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-xs font-mono text-neutral-300 hover:text-(--accent) transition-colors group/link"
+              aria-label={`Ver constancia de ${item.titulo} en una nueva ventana`}
+            >
+              <span>Ver constancia</span>
+              <ExternalLink className="w-3.5 h-3.5 text-neutral-400 group-hover/link:text-(--accent) transition-colors" />
+            </a>
+          ) : (
+            <span class="inline-flex items-center gap-2 text-xs font-mono text-neutral-500 cursor-not-allowed">
+              <span>Constancia acreditada</span>
+            </span>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+</div>

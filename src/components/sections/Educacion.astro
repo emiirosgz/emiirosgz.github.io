@@ -1,0 +1,52 @@
+---
+import InfoEdu from "./TituloSeccion.astro";
+
+const educacion = {
+  carrera: "Licenciatura en Diseño Gráfico",
+  institucion: "Universidad Tercer Milenio",
+  ubicacion: "Veracruz, Ver.",
+  periodo: "2011 - 2015"
+};
+
+const certificaciones = [
+  {
+    numero: "1203924",
+    estandar: "EC0217.01",
+    nombre: "Impartición de Cursos de Formación del Capital Humano de Manera Presencial Grupal",
+    tipo: "Estándar de competencia oficial"
+  }
+];
+---
+
+<div class="px-6">
+  <InfoEdu titulo="Educación" en="Education" />
+  
+  <div class="space-y-8 mt-8">
+    <!-- Grado Académico -->
+    <div class="group relative pl-6 border-l border-neutral-600 hover:border-l-(--accent) transition-all duration-300">
+      <div class="absolute top-0 left-0 w-1 h-0 group-hover:h-full bg-(--accent) transition-all duration-300"></div>
+      <span class="text-xs font-mono text-neutral-500">{educacion.periodo}</span>
+      <h3 class="text-xl font-bold mt-1 text-white">{educacion.carrera}</h3>
+      <h4 class="text-sm font-light text-neutral-300 mt-1">{educacion.institucion}</h4>
+      <span class="text-xs text-neutral-500 block mt-0.5">{educacion.ubicacion}</span>
+    </div>
+
+    <!-- Certificaciones -->
+    <div class="pt-6 border-t border-neutral-800">
+      <h4 class="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-6">// Certificaciones</h4>
+      
+      {certificaciones.map((cert) => (
+        <div class="group relative pl-6 border-l border-neutral-600 hover:border-l-(--accent) transition-all duration-300">
+          <div class="absolute top-0 left-0 w-1 h-0 group-hover:h-full bg-(--accent) transition-all duration-300"></div>
+          <span class="text-xs font-mono text-neutral-500">
+            No. de Certificación: <span class="text-(--accent) font-semibold">{cert.numero}</span>
+          </span>
+          <h5 class="text-base font-bold text-white mt-1">
+            {cert.estandar} - {cert.nombre}
+          </h5>
+          <p class="text-xs text-neutral-400 mt-1.5">{cert.tipo}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
